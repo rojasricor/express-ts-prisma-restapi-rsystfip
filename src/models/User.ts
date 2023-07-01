@@ -1,6 +1,6 @@
 import { OkPacket, RowDataPacket } from "mysql2";
 import { connect } from "../db";
-import { IUser } from "../interfaces/database/IUser";
+import { IUser } from "../interfaces/server/IUser";
 
 export async function getUser(
   email?: IUser["email"],

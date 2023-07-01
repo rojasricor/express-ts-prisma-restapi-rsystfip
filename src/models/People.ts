@@ -1,6 +1,6 @@
 import { OkPacket, RowDataPacket } from "mysql2";
 import { connect } from "../db";
-import { IPeople } from "../interfaces/database/IPeople";
+import { IPeople } from "../interfaces/server/IPeople";
 
 export async function getLastPerson(): Promise<IPeople | null> {
   const conn = connect();

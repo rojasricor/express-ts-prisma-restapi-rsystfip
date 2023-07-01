@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { IDean } from "../interfaces/database/IDean";
-import { IPeople } from "../interfaces/database/IPeople";
-import { IScheduleData } from "../interfaces/database/IScheduleData";
+import { IDean } from "../interfaces/server/IDean";
+import { IPeople } from "../interfaces/server/IPeople";
+import { IScheduleData } from "../interfaces/server/IScheduleData";
 import * as Dean from "../models/Dean";
 import * as People from "../models/People";
 import * as Schedule from "../models/Schedule";
-import { idSchema, peopleEditSchema, schedulerSchema } from "../validation";
+import { idSchema, peopleEditSchema, schedulerSchema } from "../validation/joi";
 
 export async function createPerson(
   req: Request,

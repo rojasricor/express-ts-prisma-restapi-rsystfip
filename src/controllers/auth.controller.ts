@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import Jwt from "jsonwebtoken";
-import * as Security from "../bcrypt";
+import * as Security from "../helpers/bcrypt";
 import { SECRET_KEY } from "../config";
 import { IPayload } from "../interfaces/IPayload";
 import * as User from "../models/User";
-import { authSchema } from "../validation";
+import { authSchema } from "../validation/joi";
 
 export async function auth(req: Request, res: Response): Promise<Response> {
   const { error, value } = authSchema.validate(req.body);

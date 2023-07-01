@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import Jwt from "jsonwebtoken";
-import * as Security from "../bcrypt";
+import * as Security from "../helpers/bcrypt";
 import { SECRET_KEY } from "../config";
 import { IPayload } from "../interfaces/IPayload";
-import { IUser } from "../interfaces/database/IUser";
+import { IUser } from "../interfaces/server/IUser";
 import * as User from "../models/User";
-import { idSchema, recoverPswSchema, userSchema } from "../validation";
-import { sendEmail } from "../sendgrid";
+import { idSchema, recoverPswSchema, userSchema } from "../validation/joi";
+import * as sgMail from "../helpers/sgMail";
 
 export async function recoverPassword(
   req: Request,
@@ -29,7 +29,7 @@ export async function recoverPassword(
   const resetPasswordLink = `${value.APP_ROUTE}/${value.email}/${token}`;
   const msg = `Estimado usuario, hemos recibido una solicitud de cambio de contraseña para su cuenta. Si no ha sido usted, por favor ignore este correo electrónico.<br>Si es así, por favor ingrese al siguiente link para restablecer su contraseña:<br>${resetPasswordLink}<br><strong>Este link expirará en 10 minutos.</strong><br><br>Saludos, <br>Equipo ITFIP - RSystfip`;
 
-  const linkSended = await sendEmail(
+  const linkSended = await sgMail.sendEmail(
     value.email,
     "Solicitud de cambio de contraseña",
     msg

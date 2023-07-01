@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { ICancelledSchedule } from "../interfaces/database/ICancelledSchedule";
-import { IScheduleData } from "../interfaces/database/IScheduleData";
+import { ICancelledSchedule } from "../interfaces/ICancelledSchedule";
+import { IScheduleData } from "../interfaces/server/IScheduleData";
 import * as Cancellation from "../models/Cancellation";
 import * as Schedule from "../models/Schedule";
-import { cancellSchema } from "../validation";
-import { sendEmail } from "../sendgrid";
+import { cancellSchema } from "../validation/joi";
+import * as sgMail from "../helpers/sgMail";
 
 export async function cancellSchedule(
   req: Request,
@@ -28,7 +28,7 @@ export async function cancellSchedule(
   const msg = `<strong>${scheduleFound.name}</strong>, your schedule cite for the day <code>${scheduleFound.start_date} has been cancelled.
   The reason of cancellation is: <code>${value.cancelled_asunt}</code>.</br><img src='https://repositorio.itfip.edu.co/themes/Mirage2/images/logo_wh.png'>`;
 
-  const msgSended = await sendEmail(
+  const msgSended = await sgMail.sendEmail(
     scheduleFound.email as string,
     "Schedule cancelled",
     msg

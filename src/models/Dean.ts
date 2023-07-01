@@ -1,6 +1,6 @@
 import { OkPacket, RowDataPacket } from "mysql2";
 import { connect } from "../db";
-import { IDean } from "../interfaces/database/IDean";
+import { IDean } from "../interfaces/server/IDean";
 
 export async function getDean(_id: IDean["_id"]): Promise<IDean | null> {
   const conn = connect();

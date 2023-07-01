@@ -1,6 +1,6 @@
 import { OkPacket } from "mysql2";
 import { connect } from "../db";
-import { ICancelledSchedule } from "../interfaces/database/ICancelledSchedule";
+import { ICancelledSchedule } from "../interfaces/ICancelledSchedule";
 
 export async function createCancellation(
   cancellation: ICancelledSchedule

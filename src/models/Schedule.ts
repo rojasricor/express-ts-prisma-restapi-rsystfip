@@ -1,7 +1,7 @@
 import { OkPacket, RowDataPacket } from "mysql2";
 import { connect } from "../db";
-import { IPeople } from "../interfaces/database/IPeople";
-import { IScheduleData } from "../interfaces/database/IScheduleData";
+import { IPeople } from "../interfaces/server/IPeople";
+import { IScheduleData } from "../interfaces/server/IScheduleData";
 
 export async function createSchedule(
   scheduleData: IScheduleData

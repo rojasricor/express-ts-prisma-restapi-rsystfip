@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { IUser } from "../interfaces/database/IUser";
+import { IUser } from "../interfaces/server/IUser";
 
 export async function encryptPassword(password: string) {
   const salt = await bcrypt.genSalt(10);
