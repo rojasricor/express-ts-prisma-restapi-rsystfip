@@ -7,8 +7,9 @@ export async function createCancellation(
 ): Promise<ICancelledSchedule | null> {
   const conn = connect();
   if (!conn) return null;
-  const [result] = (await conn.query("INSERT INTO cancelled SET ?", [
+  const [result] = await conn.query<OkPacket>("INSERT INTO cancelled SET ?", [
     cancellation,
-  ])) as OkPacket[];
+  ]);
+
   return result.affectedRows > 0 ? { ...cancellation } : null;
 }

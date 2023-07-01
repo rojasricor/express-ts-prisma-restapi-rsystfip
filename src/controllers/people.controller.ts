@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { IDean } from "../interfaces/server/IDean";
-import { IPeople } from "../interfaces/server/IPeople";
-import { IScheduleData } from "../interfaces/server/IScheduleData";
+import { IDean } from "../interfaces/IDean";
+import { IPeople } from "../interfaces/IPeople";
+import { IScheduleData } from "../interfaces/IScheduleData";
 import * as Dean from "../models/Dean";
 import * as People from "../models/People";
 import * as Schedule from "../models/Schedule";
@@ -57,17 +57,6 @@ export async function createPerson(
   });
 }
 
-export async function getPeople(
-  req: Request,
-  res: Response
-): Promise<Response> {
-  const people = await People.getPeople();
-  if (!people)
-    return res.status(400).json({ errors: { error: "Error getting people" } });
-
-  return res.status(200).json(people);
-}
-
 export async function getPerson(
   req: Request,
   res: Response
@@ -111,4 +100,26 @@ export async function updatePerson(
   return res
     .status(200)
     .json({ ok: "Person updated successfully", peopleEdited });
+}
+
+export async function getPeople(
+  req: Request,
+  res: Response
+): Promise<Response> {
+  const people = await People.getPeople();
+  if (!people)
+    return res.status(400).json({ errors: { error: "Error getting people" } });
+
+  return res.status(200).json(people);
+}
+
+export async function getCancelledPeople(
+  req: Request,
+  res: Response
+): Promise<Response> {
+  const people = await People.getCancelledPeople();
+  if (!people)
+    return res.status(400).json({ errors: { error: "Error getting people" } });
+
+  return res.status(200).json(people);
 }

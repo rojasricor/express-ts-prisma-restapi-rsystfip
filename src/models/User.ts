@@ -1,6 +1,6 @@
 import { OkPacket, RowDataPacket } from "mysql2";
 import { connect } from "../db";
-import { IUser } from "../interfaces/server/IUser";
+import { IUser } from "../interfaces/IUser";
 
 export async function getUser(
   email?: IUser["email"],
@@ -8,28 +8,28 @@ export async function getUser(
 ): Promise<IUser | null> {
   const conn = connect();
   if (!conn) return null;
-  const [user] = (await conn.query(
+  const [rows] = await conn.query<RowDataPacket[]>(
     "SELECT u.id, u.name, u.email, u.password, u.role, r.permissions FROM users u INNER JOIN roles r ON u.role = r._id WHERE u.email = ? OR u.id = ?",
     [email, id]
-  )) as RowDataPacket[];
-  return user[0] as IUser;
+  );
+  return rows[0] as IUser;
 }
 
 export async function getUsers(): Promise<IUser[] | null> {
   const conn = connect();
   if (!conn) return null;
-  const [users] = (await conn.query(
+  const [rows] = await conn.query<RowDataPacket[]>(
     "SELECT id, name, lastname, tel, email, role FROM users"
-  )) as RowDataPacket[];
-  return users as IUser[];
+  );
+  return rows as IUser[];
 }
 
 export async function createUser(user: IUser): Promise<IUser | null> {
   const conn = connect();
   if (!conn) return null;
-  const [result] = (await conn.query("INSERT INTO users SET ?", [
+  const [result] = await conn.query<OkPacket>("INSERT INTO users SET ?", [
     user,
-  ])) as OkPacket[];
+  ]);
   delete user.password;
   return result.affectedRows > 0 ? { ...user } : null;
 }
@@ -37,8 +37,9 @@ export async function createUser(user: IUser): Promise<IUser | null> {
 export async function deleteUser(id: IUser["id"]): Promise<boolean> {
   const conn = connect();
   if (!conn) return false;
-  const [result] = (await conn.query("DELETE FROM users WHERE id = ?", [
-    id,
-  ])) as OkPacket[];
+  const [result] = await conn.query<OkPacket>(
+    "DELETE FROM users WHERE id = ?",
+    [id]
+  );
   return result.affectedRows > 0;
 }

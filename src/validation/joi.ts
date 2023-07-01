@@ -1,4 +1,4 @@
-import Joi from "joi";
+import Joi, { string } from "joi";
 
 const JoiDefaults = Joi.defaults((scheme) =>
   scheme.options({ abortEarly: false })
@@ -6,6 +6,20 @@ const JoiDefaults = Joi.defaults((scheme) =>
 
 export const idSchema = JoiDefaults.object({
   id: Joi.string().min(1).max(11).required(),
+});
+
+// Only backend
+export const filterSchema = JoiDefaults.object({
+  start: Joi.when("status", {
+    is: "scheduled",
+    then: Joi.string().required(),
+    otherwise: Joi.optional(),
+  }),
+  end: Joi.when("status", {
+    is: "scheduled",
+    then: Joi.string().required(),
+    otherwise: Joi.optional(),
+  }),
 });
 
 const emailItfipSchema = JoiDefaults.object({

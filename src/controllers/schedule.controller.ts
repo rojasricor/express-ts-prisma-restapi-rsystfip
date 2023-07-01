@@ -1,10 +1,23 @@
 import { Request, Response } from "express";
 import { ICancelledSchedule } from "../interfaces/ICancelledSchedule";
-import { IScheduleData } from "../interfaces/server/IScheduleData";
+import { IScheduleData } from "../interfaces/IScheduleData";
 import * as Cancellation from "../models/Cancellation";
 import * as Schedule from "../models/Schedule";
 import { cancellSchema } from "../validation/joi";
 import * as sgMail from "../helpers/sgMail";
+
+export async function getSchedule(
+  req: Request,
+  res: Response
+): Promise<Response> {
+  const schedules = await Schedule.getSchedule();
+  if (!schedules)
+    return res
+      .status(400)
+      .json({ errors: { error: "Error getting schedules" } });
+
+  return res.status(200).json(schedules);
+}
 
 export async function cancellSchedule(
   req: Request,
@@ -16,7 +29,7 @@ export async function cancellSchedule(
   });
   if (error) return res.status(400).json({ errors: error.message });
 
-  const scheduleFound = await Schedule.getSchedule(value.id);
+  const scheduleFound = await Schedule.getOneSchedule(value.id);
   if (!scheduleFound)
     return res.status(400).json({ errors: { error: "Schedule not found" } });
 

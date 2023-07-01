@@ -1,4 +1,4 @@
-import { IUser } from "./server/IUser";
+import { IUser } from "./IUser";
 
 export interface IPayload {
   _id: IUser["id"];
