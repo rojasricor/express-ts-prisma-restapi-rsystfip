@@ -52,7 +52,7 @@ export async function cancellSchedule(
       .json({ errors: { error: "Schedule not cancelled" } });
 
   const newScheduleCancelled: IScheduleData = { status: "cancelled" };
-  const scheduleCancelled = await Schedule.cancellSchedule(
+  const scheduleCancelled = await Schedule.updateSchedule(
     newScheduleCancelled,
     scheduleFound.person_id,
     scheduleFound.start_date

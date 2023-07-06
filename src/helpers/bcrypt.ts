@@ -8,7 +8,7 @@ export async function encryptPassword(password: string) {
 
 export async function verifyPassword(
   password: IUser["password"],
-  receivedPassword: IUser["password"]
+  hash: IUser["password"]
 ) {
-  return await bcrypt.compare(password as string, receivedPassword as string);
+  return await bcrypt.compare(password as string, hash as string);
 }

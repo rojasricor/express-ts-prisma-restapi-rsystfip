@@ -85,7 +85,7 @@ export async function updatePerson(
   if (!personFound)
     return res.status(400).json({ errors: { error: "Person not found" } });
 
-  const person: IPeople = {
+  const dataPerson: IPeople = {
     name: value.name,
     document_id: value.doctype,
     document_number: value.doc,
@@ -93,7 +93,7 @@ export async function updatePerson(
     facultie_id: value.facultie,
     come_asunt: value.asunt,
   };
-  const peopleEdited = await People.updatePerson(value.id, person);
+  const peopleEdited = await People.updatePerson(value.id, dataPerson);
   if (!peopleEdited)
     return res.status(400).json({ errors: { error: "None person updated" } });
 
@@ -117,9 +117,9 @@ export async function getCancelledPeople(
   req: Request,
   res: Response
 ): Promise<Response> {
-  const people = await People.getCancelledPeople();
-  if (!people)
-    return res.status(400).json({ errors: { error: "Error getting people" } });
+  const peopleCancelled = await People.getCancelledPeople();
+  if (!peopleCancelled)
+    return res.status(400).json({ errors: { error: "Error getting cancelled people" } });
 
-  return res.status(200).json(people);
+  return res.status(200).json(peopleCancelled);
 }

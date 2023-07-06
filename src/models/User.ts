@@ -3,10 +3,11 @@ import { connect } from "../db";
 import { IUser } from "../interfaces/IUser";
 
 export async function getUser(
-  email?: IUser["email"],
-  id?: IUser["id"]
+  id?: IUser["id"],
+  email?: IUser["email"]
 ): Promise<IUser | null> {
-  const conn = connect();
+  const conn = await 
+connect();
   if (!conn) return null;
   const [rows] = await conn.query<RowDataPacket[]>(
     "SELECT u.id, u.name, u.email, u.password, u.role, r.permissions FROM users u INNER JOIN roles r ON u.role = r._id WHERE u.email = ? OR u.id = ?",
@@ -16,7 +17,8 @@ export async function getUser(
 }
 
 export async function getUsers(): Promise<IUser[] | null> {
-  const conn = connect();
+  const conn = await 
+connect();
   if (!conn) return null;
   const [rows] = await conn.query<RowDataPacket[]>(
     "SELECT id, name, lastname, tel, email, role FROM users"
@@ -25,7 +27,8 @@ export async function getUsers(): Promise<IUser[] | null> {
 }
 
 export async function createUser(user: IUser): Promise<IUser | null> {
-  const conn = connect();
+  const conn = await 
+connect();
   if (!conn) return null;
   const [result] = await conn.query<OkPacket>("INSERT INTO users SET ?", [
     user,
@@ -35,11 +38,26 @@ export async function createUser(user: IUser): Promise<IUser | null> {
 }
 
 export async function deleteUser(id: IUser["id"]): Promise<boolean> {
-  const conn = connect();
+  const conn = await 
+connect();
   if (!conn) return false;
   const [result] = await conn.query<OkPacket>(
     "DELETE FROM users WHERE id = ?",
     [id]
   );
   return result.affectedRows > 0;
+}
+
+export async function updateUser(
+  id: IUser["id"],
+  user: IUser
+): Promise<IUser | null> {
+  const conn = await 
+connect();
+  if (!conn) return null;
+  const [result] = await conn.query<OkPacket>(
+    "UPDATE users SET ? WHERE id = ?",
+    [user, id]
+  );
+  return result.affectedRows > 0 ? { ...user } : null;
 }

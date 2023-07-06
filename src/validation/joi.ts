@@ -1,4 +1,4 @@
-import Joi, { string } from "joi";
+import Joi from "joi";
 
 const JoiDefaults = Joi.defaults((scheme) =>
   scheme.options({ abortEarly: false })

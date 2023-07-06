@@ -8,11 +8,11 @@ export async function getUser(req: Request, res: Response): Promise<Response> {
   const { error, value } = idSchema.validate(req.params);
   if (error) return res.status(400).json({ errors: error.message });
 
-  const user = await User.getUser(value.id);
-  if (!user)
+  const userFound = await User.getUser(value.id);
+  if (!userFound)
     return res.status(400).json({ errors: { error: "User not found" } });
 
-  return res.status(200).json(user);
+  return res.status(200).json(userFound);
 }
 
 export async function getUsers(req: Request, res: Response): Promise<Response> {
@@ -44,8 +44,8 @@ export async function createUser(
   const { error, value } = userSchema.validate(req.body);
   if (error) return res.status(400).json({ errors: error.message });
 
-  const userFound = await User.getUser(value.email, parseInt(value.role) - 1);
-  if (!userFound) {
+  const userExists = await User.getUser(parseInt(value.role) - 1, value.email);
+  if (!userExists) {
     const newUser: IUser = {
       id: parseInt(value.role) - 1,
       document_id: value.docType,
@@ -66,7 +66,7 @@ export async function createUser(
       .json({ ok: "User created successfully", userCreated });
   }
 
-  if (value.email === userFound.email)
+  if (value.email === userExists.email)
     return res
       .status(400)
       .json({ errors: { error: "Email already registered" } });

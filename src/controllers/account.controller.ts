@@ -4,7 +4,9 @@ import { SECRET_KEY } from "../config";
 import * as sgMail from "../helpers/sgMail";
 import { IPayload } from "../interfaces/IPayload";
 import * as User from "../models/User";
-import { recoverPswSchema } from "../validation/joi";
+import { recoverPswSchema, changePswSchema } from "../validation/joi";
+import * as Security from "../helpers/bcrypt";
+import { IUser } from "../interfaces/IUser";
 
 export async function verifyJwtForRecoverPassword(
   req: Request,
@@ -29,7 +31,7 @@ export async function sendJwtForRecoverPassword(
   const { error, value } = recoverPswSchema.validate(req.body);
   if (error) return res.status(400).json({ errors: error.message });
 
-  const userFound = await User.getUser(value.email);
+  const userFound = await User.getUser(undefined, value.email);
   if (!userFound)
     return res
       .status(401)
@@ -54,4 +56,38 @@ export async function sendJwtForRecoverPassword(
   return res.status(200).json({
     ok: `${userFound.name}, we will send you an email with instructions to reset your password at ${value.email}. Expires in 10 minutes.`,
   });
+}
+
+export async function changePassword(
+  req: Request,
+  res: Response
+): Promise<Response> {
+  const { error, value } = changePswSchema.validate({
+    ...req.body,
+    ...req.params,
+  });
+  if (error) return res.status(400).json({ errors: error.message });
+
+  const userFound = await User.getUser(value.id);
+  if (!userFound)
+    return res.status(400).json({ errors: { error: "User not found" } });
+
+  const auth = await Security.verifyPassword(
+    value.current_password,
+    userFound.password
+  );
+  if (!auth)
+    return res
+      .status(400)
+      .json({ errors: { error: "Current password incorrect" } });
+
+  const passwordChanged = await User.updateUser(userFound.id, {
+    password: await Security.encryptPassword(value.new_password),
+  } as IUser);
+  if (!passwordChanged)
+    return res
+      .status(400)
+      .json({ errors: { error: "Error updating password" } });
+
+  return res.status(200).json({ ok: "Password changed successfully" });
 }
