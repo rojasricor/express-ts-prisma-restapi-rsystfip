@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import Jwt from "jsonwebtoken";
-import * as Security from "../helpers/bcrypt";
 import { SECRET_KEY } from "../config";
+import * as Security from "../helpers/bcrypt";
 import * as User from "../models/User";
 import { authSchema } from "../validation/joi";
 

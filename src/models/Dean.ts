@@ -3,8 +3,7 @@ import { connect } from "../db";
 import { IDean } from "../interfaces/IDean";
 
 export async function getDean(_id: IDean["_id"]): Promise<IDean | null> {
-  const conn = await 
-connect();
+  const conn = await connect();
   if (!conn) return null;
   const [rows] = await conn.query<RowDataPacket[]>(
     "SELECT _id FROM deans WHERE _id = ?",
@@ -14,8 +13,7 @@ connect();
 }
 
 export async function getDeans(): Promise<IDean[] | null> {
-  const conn = await 
-connect();
+  const conn = await connect();
   if (!conn) return null;
   const [rows] = await conn.query<RowDataPacket[]>(
     "SELECT _id, dean, facultie_id FROM deans"
@@ -24,8 +22,7 @@ connect();
 }
 
 export async function createDean(dean: IDean): Promise<IDean | null> {
-  const conn = await 
-connect();
+  const conn = await connect();
   if (!conn) return null;
   const [result] = await conn.query<OkPacket>("INSERT INTO deans SET ?", [
     dean,

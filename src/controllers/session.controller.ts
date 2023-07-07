@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { SECRET_KEY } from "../config";
 import Jwt from "jsonwebtoken";
+import { SECRET_KEY } from "../config";
 import { IPayload } from "../interfaces/IPayload";
 
 export async function verifyJwtOfSession(

@@ -119,7 +119,9 @@ export async function getCancelledPeople(
 ): Promise<Response> {
   const peopleCancelled = await People.getCancelledPeople();
   if (!peopleCancelled)
-    return res.status(400).json({ errors: { error: "Error getting cancelled people" } });
+    return res
+      .status(400)
+      .json({ errors: { error: "Error getting cancelled people" } });
 
   return res.status(200).json(peopleCancelled);
 }

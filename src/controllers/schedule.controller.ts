@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
+import * as sgMail from "../helpers/sgMail";
 import { ICancelledSchedule } from "../interfaces/ICancelledSchedule";
 import { IScheduleData } from "../interfaces/IScheduleData";
 import * as Cancellation from "../models/Cancellation";
 import * as Schedule from "../models/Schedule";
 import { cancellSchema } from "../validation/joi";
-import * as sgMail from "../helpers/sgMail";
 
 export async function getSchedule(
   req: Request,
