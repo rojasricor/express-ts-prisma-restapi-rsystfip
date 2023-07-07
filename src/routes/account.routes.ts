@@ -9,6 +9,7 @@ router
 router
   .route("/verify-jwt-for-recover-password")
   .post(accountCtrl.verifyJwtForRecoverPassword);
-router.route("/change-password/:id").put(accountCtrl.changePassword)
+router.route("/update-password").put(accountCtrl.updatePasswordWithJwt);
+router.route("/update-password/:id").put(accountCtrl.updatePassword);
 
 export default router;

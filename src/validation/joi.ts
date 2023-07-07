@@ -75,7 +75,7 @@ export const recoverPswSchema = emailItfipSchema.keys({
   APP_ROUTE: Joi.string().uri().required(),
 });
 
-export const forgetPswSchema = emailItfipSchema.keys({
+export const forgetPswSchema = JoiDefaults.object({
   resetToken: Joi.string().required(),
   password: Joi.string().min(8).max(30).required(),
   password_confirm: Joi.string()

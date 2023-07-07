@@ -4,7 +4,11 @@ import { SECRET_KEY } from "../config";
 import * as sgMail from "../helpers/sgMail";
 import { IPayload } from "../interfaces/IPayload";
 import * as User from "../models/User";
-import { recoverPswSchema, changePswSchema } from "../validation/joi";
+import {
+  recoverPswSchema,
+  changePswSchema,
+  forgetPswSchema,
+} from "../validation/joi";
 import * as Security from "../helpers/bcrypt";
 import { IUser } from "../interfaces/IUser";
 
@@ -58,7 +62,7 @@ export async function sendJwtForRecoverPassword(
   });
 }
 
-export async function changePassword(
+export async function updatePassword(
   req: Request,
   res: Response
 ): Promise<Response> {
@@ -89,5 +93,45 @@ export async function changePassword(
       .status(400)
       .json({ errors: { error: "Error updating password" } });
 
-  return res.status(200).json({ ok: "Password changed successfully" });
+  return res.status(200).json({ ok: "Password updated successfully" });
+}
+
+export async function updatePasswordWithJwt(
+  req: Request,
+  res: Response
+): Promise<Response> {
+  const { error, value } = forgetPswSchema.validate(req.body);
+  if (error) return res.status(400).json({ errors: error.message });
+
+  try {
+    const payload = Jwt.verify(
+      value.resetToken,
+      SECRET_KEY || "secretkey"
+    ) as IPayload;
+
+    const userFound = await User.getUser(payload._id, payload.email);
+    if (!userFound)
+      return res.status(400).json({ errors: { error: "User not found" } });
+
+    const auth = await Security.verifyPassword(
+      value.password,
+      userFound.password
+    );
+    if (auth)
+      return res
+        .status(400)
+        .json({ errors: { error: "None password updated" } });
+
+    const passwordChanged = await User.updateUser(userFound.id, {
+      password: await Security.encryptPassword(value.password),
+    } as IUser);
+    if (!passwordChanged)
+      return res
+        .status(400)
+        .json({ errors: { error: "Error updating password" } });
+
+    return res.status(200).json({ ok: "Password updated successfully" });
+  } catch (error: any) {
+    return res.status(401).json({ errors: { error: error.message } });
+  }
 }
