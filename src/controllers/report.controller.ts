@@ -7,7 +7,8 @@ export async function getReports(
     res: Response
 ): Promise<Response> {
     const { error, value } = filterSchema.validate(req.query);
-    if (error) return res.status(400).json({ errors: error.message });
+    if (error)
+        return res.status(400).json({ errors: { error: error.message } });
 
     const reports = await Report.getReports(value.start, value.end);
     if (!reports)
@@ -23,7 +24,8 @@ export async function getReportCount(
     res: Response
 ): Promise<Response> {
     const { error, value } = filterSchema.validate(req.query);
-    if (error) return res.status(400).json({ errors: error.message });
+    if (error)
+        return res.status(400).json({ errors: { error: error.message } });
 
     const count = await Report.getReportCount(value.start, value.end);
     if (!count)

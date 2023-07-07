@@ -9,6 +9,7 @@ import peopleRoutes from "./routes/people.routes";
 import reportRoutes from "./routes/report.routes";
 import resourceRoutes from "./routes/resource.routes";
 import scheduleRoutes from "./routes/schedule.routes";
+import statisticRoutes from "./routes/statistic.routes";
 import userRoutes from "./routes/user.routes";
 
 export class App {
@@ -40,6 +41,7 @@ export class App {
         this.app.use("/api/resource", resourceRoutes);
         this.app.use("/api/deans", deanRoutes);
         this.app.use("/api/reports", reportRoutes);
+        this.app.use("/api/statistics", statisticRoutes);
     }
 
     listen() {

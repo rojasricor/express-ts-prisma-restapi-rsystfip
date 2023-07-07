@@ -12,7 +12,8 @@ export async function createPerson(
     res: Response
 ): Promise<Response> {
     const { error, value } = schedulerSchema.validate(req.body);
-    if (error) return res.status(400).json({ errors: error.message });
+    if (error)
+        return res.status(400).json({ errors: { error: error.message } });
 
     if (value.person === "4") {
         const deanFound = await Dean.getDean(value.doc);
@@ -64,7 +65,8 @@ export async function getPerson(
     res: Response
 ): Promise<Response> {
     const { error, value } = idSchema.validate(req.params);
-    if (error) return res.status(400).json({ errors: error.message });
+    if (error)
+        return res.status(400).json({ errors: { error: error.message } });
 
     const personFound = await People.getPerson(value.id);
     if (!personFound)
@@ -81,7 +83,8 @@ export async function updatePerson(
         ...req.params,
         ...req.body,
     });
-    if (error) return res.status(400).json({ errors: error.message });
+    if (error)
+        return res.status(400).json({ errors: { error: error.message } });
 
     const personFound = await People.getPerson(value.id);
     if (!personFound)

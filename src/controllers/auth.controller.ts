@@ -7,7 +7,8 @@ import { authSchema } from "../validation/joi";
 
 export async function auth(req: Request, res: Response): Promise<Response> {
     const { error, value } = authSchema.validate(req.body);
-    if (error) return res.status(400).json({ errors: error.message });
+    if (error)
+        return res.status(400).json({ errors: { error: error.message } });
 
     const userFound = await User.getUser(
         undefined,

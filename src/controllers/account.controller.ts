@@ -35,7 +35,8 @@ export async function sendJwtForRecoverPassword(
     res: Response
 ): Promise<Response> {
     const { error, value } = recoverPswSchema.validate(req.body);
-    if (error) return res.status(400).json({ errors: error.message });
+    if (error)
+        return res.status(400).json({ errors: { error: error.message } });
 
     const userFound = await User.getUser(undefined, value.email);
     if (!userFound)
@@ -74,7 +75,8 @@ export async function updatePassword(
         ...req.body,
         ...req.params,
     });
-    if (error) return res.status(400).json({ errors: error.message });
+    if (error)
+        return res.status(400).json({ errors: { error: error.message } });
 
     const userFound = await User.getUser(value.id);
     if (!userFound)
@@ -105,7 +107,8 @@ export async function updatePasswordWithJwt(
     res: Response
 ): Promise<Response> {
     const { error, value } = forgetPswSchema.validate(req.body);
-    if (error) return res.status(400).json({ errors: error.message });
+    if (error)
+        return res.status(400).json({ errors: { error: error.message } });
 
     try {
         const payload = Jwt.verify(

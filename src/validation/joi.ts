@@ -4,6 +4,13 @@ const JoiDefaults = Joi.defaults((scheme) =>
     scheme.options({ abortEarly: false })
 );
 
+export const statusSchema = JoiDefaults.object({
+    status: Joi.string()
+        .valid("daily", "scheduled") // excludes "cancelled"
+        .required()
+        .messages({ "any.only": "Error, status not valid" }),
+});
+
 export const idSchema = JoiDefaults.object({
     id: Joi.string().min(1).max(11).required(),
 });
@@ -20,6 +27,11 @@ export const filterSchema = JoiDefaults.object({
         then: Joi.string().required(),
         otherwise: Joi.optional(),
     }),
+});
+
+export const statisticfilterSchema = statusSchema.keys({
+    start: Joi.string().required(),
+    end: Joi.string().required(),
 });
 
 const emailItfipSchema = JoiDefaults.object({
@@ -127,11 +139,7 @@ export const peopleEditSchema = idSchema.keys({
     asunt: Joi.string().min(10).max(150).required(),
 });
 
-export const schedulerSchema = JoiDefaults.object({
-    status: Joi.string()
-        .valid("daily", "scheduled") // excludes "cancelled"
-        .required()
-        .messages({ "any.only": "Error, status not valid" }),
+export const schedulerSchema = statusSchema.keys({
     person: Joi.string().length(1).required(),
     name: Joi.string().min(8).max(50).required(),
     doctype: Joi.string().length(1).required(),

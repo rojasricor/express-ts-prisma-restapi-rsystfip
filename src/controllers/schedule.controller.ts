@@ -27,7 +27,8 @@ export async function cancellSchedule(
         ...req.params,
         ...req.body,
     });
-    if (error) return res.status(400).json({ errors: error.message });
+    if (error)
+        return res.status(400).json({ errors: { error: error.message } });
 
     const scheduleFound = await Schedule.getOneSchedule(value.id);
     if (!scheduleFound)

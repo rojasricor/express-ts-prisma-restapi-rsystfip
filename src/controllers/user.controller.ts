@@ -6,7 +6,8 @@ import { idSchema, userSchema } from "../validation/joi";
 
 export async function getUser(req: Request, res: Response): Promise<Response> {
     const { error, value } = idSchema.validate(req.params);
-    if (error) return res.status(400).json({ errors: error.message });
+    if (error)
+        return res.status(400).json({ errors: { error: error.message } });
 
     const userFound = await User.getUser(value.id);
     if (!userFound)
@@ -30,7 +31,8 @@ export async function deleteUser(
     res: Response
 ): Promise<Response> {
     const { error, value } = idSchema.validate(req.params);
-    if (error) return res.status(400).json({ errors: error.message });
+    if (error)
+        return res.status(400).json({ errors: { error: error.message } });
 
     const userDeleted = await User.deleteUser(value.id);
     if (!userDeleted)
@@ -46,7 +48,8 @@ export async function createUser(
     res: Response
 ): Promise<Response> {
     const { error, value } = userSchema.validate(req.body);
-    if (error) return res.status(400).json({ errors: error.message });
+    if (error)
+        return res.status(400).json({ errors: { error: error.message } });
 
     const userExists = await User.getUser(
         parseInt(value.role) - 1,
