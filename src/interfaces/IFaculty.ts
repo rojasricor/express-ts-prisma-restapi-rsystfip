@@ -1,4 +1,4 @@
 export interface IFaculty {
-  id: number;
-  facultie: string;
+    id: number;
+    facultie: string;
 }

@@ -12,38 +12,38 @@ import scheduleRoutes from "./routes/schedule.routes";
 import userRoutes from "./routes/user.routes";
 
 export class App {
-  private app: express.Application;
+    private app: express.Application;
 
-  constructor(private port: number | string) {
-    this.app = express();
-    this.settings();
-    this.middlewares();
-    this.routes();
-  }
+    constructor(private port: number | string) {
+        this.app = express();
+        this.settings();
+        this.middlewares();
+        this.routes();
+    }
 
-  settings() {
-    this.app.set("port", this.port || PORT || 3000);
-  }
+    settings() {
+        this.app.set("port", this.port || PORT || 3000);
+    }
 
-  middlewares() {
-    this.app.use(morgan("dev"));
-    this.app.use(express.json());
-    this.app.use(cors());
-  }
+    middlewares() {
+        this.app.use(morgan("dev"));
+        this.app.use(express.json());
+        this.app.use(cors());
+    }
 
-  routes() {
-    this.app.use("/api/auth", authRoutes);
-    this.app.use("/api/account", accountRoutes);
-    this.app.use("/api/users", userRoutes);
-    this.app.use("/api/people", peopleRoutes);
-    this.app.use("/api/schedule", scheduleRoutes);
-    this.app.use("/api/resource", resourceRoutes);
-    this.app.use("/api/deans", deanRoutes);
-    this.app.use("/api/reports", reportRoutes);
-  }
+    routes() {
+        this.app.use("/api/auth", authRoutes);
+        this.app.use("/api/account", accountRoutes);
+        this.app.use("/api/users", userRoutes);
+        this.app.use("/api/people", peopleRoutes);
+        this.app.use("/api/schedule", scheduleRoutes);
+        this.app.use("/api/resource", resourceRoutes);
+        this.app.use("/api/deans", deanRoutes);
+        this.app.use("/api/reports", reportRoutes);
+    }
 
-  listen() {
-    this.app.listen(this.app.get("port"));
-    console.info("Server running on port", this.app.get("port"));
-  }
+    listen() {
+        this.app.listen(this.app.get("port"));
+        console.info("Server running on port", this.app.get("port"));
+    }
 }

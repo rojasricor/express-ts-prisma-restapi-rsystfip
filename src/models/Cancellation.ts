@@ -3,13 +3,12 @@ import { connect } from "../db";
 import { ICancelledSchedule } from "../interfaces/ICancelledSchedule";
 
 export async function createCancellation(
-  cancellation: ICancelledSchedule
+    cancellation: ICancelledSchedule
 ): Promise<ICancelledSchedule | null> {
-  const conn = await connect();
-  if (!conn) return null;
-  const [result] = await conn.query<OkPacket>("INSERT INTO cancelled SET ?", [
-    cancellation,
-  ]);
-
-  return result.affectedRows > 0 ? { ...cancellation } : null;
+    const conn = await connect();
+    if (!conn) return null;
+    const [result] = await conn.query<OkPacket>("INSERT INTO cancelled SET ?", [
+        cancellation,
+    ]);
+    return result.affectedRows > 0 ? { ...cancellation } : null;
 }

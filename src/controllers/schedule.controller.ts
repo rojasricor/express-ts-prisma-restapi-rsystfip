@@ -7,73 +7,75 @@ import * as Schedule from "../models/Schedule";
 import { cancellSchema } from "../validation/joi";
 
 export async function getSchedule(
-  req: Request,
-  res: Response
+    req: Request,
+    res: Response
 ): Promise<Response> {
-  const schedules = await Schedule.getSchedule();
-  if (!schedules)
-    return res
-      .status(400)
-      .json({ errors: { error: "Error getting schedules" } });
+    const schedules = await Schedule.getSchedule();
+    if (!schedules)
+        return res
+            .status(400)
+            .json({ errors: { error: "Error getting schedules" } });
 
-  return res.status(200).json(schedules);
+    return res.status(200).json(schedules);
 }
 
 export async function cancellSchedule(
-  req: Request,
-  res: Response
+    req: Request,
+    res: Response
 ): Promise<Response> {
-  const { error, value } = cancellSchema.validate({
-    ...req.params,
-    ...req.body,
-  });
-  if (error) return res.status(400).json({ errors: error.message });
+    const { error, value } = cancellSchema.validate({
+        ...req.params,
+        ...req.body,
+    });
+    if (error) return res.status(400).json({ errors: error.message });
 
-  const scheduleFound = await Schedule.getOneSchedule(value.id);
-  if (!scheduleFound)
-    return res.status(400).json({ errors: { error: "Schedule not found" } });
+    const scheduleFound = await Schedule.getOneSchedule(value.id);
+    if (!scheduleFound)
+        return res
+            .status(400)
+            .json({ errors: { error: "Schedule not found" } });
 
-  if (scheduleFound.status === "cancelled")
-    return res
-      .status(400)
-      .json({ errors: { error: "Schedule already cancelled" } });
+    if (scheduleFound.status === "cancelled")
+        return res
+            .status(400)
+            .json({ errors: { error: "Schedule already cancelled" } });
 
-  const msg = `<strong>${scheduleFound.name}</strong>, your schedule cite for the day <code>${scheduleFound.start_date} has been cancelled.
+    const msg = `<strong>${scheduleFound.name}</strong>, your schedule cite for the day <code>${scheduleFound.start_date} has been cancelled.
   The reason of cancellation is: <code>${value.cancelled_asunt}</code>.</br><img src='https://repositorio.itfip.edu.co/themes/Mirage2/images/logo_wh.png'>`;
 
-  const msgSended = await sgMail.sendEmail(
-    scheduleFound.email as string,
-    "Schedule cancelled",
-    msg
-  );
-  if (!msgSended?.response)
-    return res
-      .status(400)
-      .json({ errors: { error: "Schedule not cancelled" } });
+    const msgSended = await sgMail.sendEmail(
+        scheduleFound.email as string,
+        "Schedule cancelled",
+        msg
+    );
+    if (!msgSended?.response)
+        return res
+            .status(400)
+            .json({ errors: { error: "Schedule not cancelled" } });
 
-  const newScheduleCancelled: IScheduleData = { status: "cancelled" };
-  const scheduleCancelled = await Schedule.updateSchedule(
-    newScheduleCancelled,
-    scheduleFound.person_id,
-    scheduleFound.start_date
-  );
-  if (!scheduleCancelled)
-    return res
-      .status(400)
-      .json({ errors: { error: "Schedule not cancelled" } });
+    const newScheduleCancelled: IScheduleData = { status: "cancelled" };
+    const scheduleCancelled = await Schedule.updateSchedule(
+        newScheduleCancelled,
+        scheduleFound.person_id,
+        scheduleFound.start_date
+    );
+    if (!scheduleCancelled)
+        return res
+            .status(400)
+            .json({ errors: { error: "Schedule not cancelled" } });
 
-  const newCancellation: ICancelledSchedule = {
-    cancelled_asunt: value.cancelled_asunt,
-    person_id: scheduleFound.person_id as number,
-  };
-  const cancellation = await Cancellation.createCancellation(newCancellation);
-  if (!cancellation)
-    return res
-      .status(400)
-      .json({ errors: { error: "Schedule not cancelled" } });
+    const newCancellation: ICancelledSchedule = {
+        cancelled_asunt: value.cancelled_asunt,
+        person_id: scheduleFound.person_id as number,
+    };
+    const cancellation = await Cancellation.createCancellation(newCancellation);
+    if (!cancellation)
+        return res
+            .status(400)
+            .json({ errors: { error: "Schedule not cancelled" } });
 
-  return res.status(200).json({
-    ok: "Schedule cancelled successfully",
-    scheduleCancelled: { ...cancellation, ...scheduleCancelled },
-  });
+    return res.status(200).json({
+        ok: "Schedule cancelled successfully",
+        scheduleCancelled: { ...cancellation, ...scheduleCancelled },
+    });
 }

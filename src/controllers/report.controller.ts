@@ -3,44 +3,46 @@ import * as Report from "../models/Report";
 import { filterSchema } from "../validation/joi";
 
 export async function getReports(
-  req: Request,
-  res: Response
+    req: Request,
+    res: Response
 ): Promise<Response> {
-  const { error, value } = filterSchema.validate(req.query);
-  if (error) return res.status(400).json({ errors: error.message });
+    const { error, value } = filterSchema.validate(req.query);
+    if (error) return res.status(400).json({ errors: error.message });
 
-  const reports = await Report.getReports(value.start, value.end);
-  if (!reports)
-    return res.status(400).json({ errors: { error: "Error getting reports" } });
+    const reports = await Report.getReports(value.start, value.end);
+    if (!reports)
+        return res
+            .status(400)
+            .json({ errors: { error: "Error getting reports" } });
 
-  return res.status(200).json(reports);
+    return res.status(200).json(reports);
 }
 
 export async function getReportCount(
-  req: Request,
-  res: Response
+    req: Request,
+    res: Response
 ): Promise<Response> {
-  const { error, value } = filterSchema.validate(req.query);
-  if (error) return res.status(400).json({ errors: error.message });
+    const { error, value } = filterSchema.validate(req.query);
+    if (error) return res.status(400).json({ errors: error.message });
 
-  const count = await Report.getReportCount(value.start, value.end);
-  if (!count)
-    return res
-      .status(400)
-      .json({ errors: { error: "Error getting report count" } });
+    const count = await Report.getReportCount(value.start, value.end);
+    if (!count)
+        return res
+            .status(400)
+            .json({ errors: { error: "Error getting report count" } });
 
-  return res.status(200).json(count);
+    return res.status(200).json(count);
 }
 
 export async function getReportCounts(
-  req: Request,
-  res: Response
+    req: Request,
+    res: Response
 ): Promise<Response> {
-  const counts = await Report.getReportCounts();
-  if (!counts)
-    return res
-      .status(400)
-      .json({ errors: { error: "Error getting report counts" } });
+    const counts = await Report.getReportCounts();
+    if (!counts)
+        return res
+            .status(400)
+            .json({ errors: { error: "Error getting report counts" } });
 
-  return res.status(200).json(counts);
+    return res.status(200).json(counts);
 }
