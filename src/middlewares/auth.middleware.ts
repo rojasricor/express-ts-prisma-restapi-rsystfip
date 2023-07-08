@@ -16,7 +16,7 @@ function validateAuth(
         req.payloadUser = payload;
         return next();
     } catch (error: any) {
-        return res.status(401).json({ errors: { error: error.message } });
+        return res.status(401).json({ error: error.message });
     }
 }
 

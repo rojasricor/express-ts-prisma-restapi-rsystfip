@@ -10,8 +10,7 @@ export async function getStatistics(
         ...req.params,
         ...req.query,
     });
-    if (error)
-        return res.status(400).json({ errors: { error: error.message } });
+    if (error) return res.status(400).json({ error: error.message });
 
     const statistics = await Statistic.getStatistics(
         value.status,
@@ -19,9 +18,7 @@ export async function getStatistics(
         value.end
     );
     if (!statistics)
-        return res
-            .status(400)
-            .json({ errors: { error: "Error getting statistics" } });
+        return res.status(400).json({ error: "Error getting statistics" });
 
     return res.status(200).json(statistics);
 }
@@ -34,8 +31,7 @@ export async function getMostAgendatedOnRange(
         ...req.params,
         ...req.query,
     });
-    if (error)
-        return res.status(400).json({ errors: { error: error.message } });
+    if (error) return res.status(400).json({ error: error.message });
 
     const statistics = await Statistic.getMostAgendatedOnRange(
         value.status,
@@ -43,9 +39,7 @@ export async function getMostAgendatedOnRange(
         value.end
     );
     if (!statistics)
-        return res
-            .status(400)
-            .json({ errors: { error: "Error getting statistics" } });
+        return res.status(400).json({ error: "Error getting statistics" });
 
     return res.status(200).json(statistics);
 }
@@ -55,14 +49,11 @@ export async function getMostAgendatedAllTime(
     res: Response
 ): Promise<Response> {
     const { error, value } = statusSchema.validate(req.params);
-    if (error)
-        return res.status(400).json({ errors: { error: error.message } });
+    if (error) return res.status(400).json({ error: error.message });
 
     const statistics = await Statistic.getMostAgendatedAllTime(value.status);
     if (!statistics)
-        return res
-            .status(400)
-            .json({ errors: { error: "Error getting statistics" } });
+        return res.status(400).json({ error: "Error getting statistics" });
 
     return res.status(200).json(statistics);
 }

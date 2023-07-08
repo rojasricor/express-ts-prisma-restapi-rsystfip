@@ -13,9 +13,9 @@ export async function verifyJwtOfSession(
     try {
         const payload = Jwt.verify(jwt, SECRET_KEY || "secretkey") as IPayload;
         return res
-            .status(200)
+            .status(400)
             .json({ ok: { isValid: true, decoded: payload } });
     } catch (error: any) {
-        return res.status(401).json({ errors: { error: error.message } });
+        return res.status(401).json({ error: error.message });
     }
 }

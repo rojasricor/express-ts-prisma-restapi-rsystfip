@@ -35,14 +35,11 @@ export async function sendJwtForRecoverPassword(
     res: Response
 ): Promise<Response> {
     const { error, value } = recoverPswSchema.validate(req.body);
-    if (error)
-        return res.status(400).json({ errors: { error: error.message } });
+    if (error) return res.status(400).json({ error: error.message });
 
     const userFound = await User.getUser(undefined, value.email);
     if (!userFound)
-        return res
-            .status(401)
-            .json({ errors: { error: "Email isn't registered" } });
+        return res.status(401).json({ error: "Email isn't registered" });
 
     const token = Jwt.sign(
         { _id: userFound.id, email: userFound.email },
@@ -58,9 +55,7 @@ export async function sendJwtForRecoverPassword(
         msg
     );
     if (!linkSended?.response)
-        return res
-            .status(400)
-            .json({ errors: { error: "Error sending email" } });
+        return res.status(400).json({ error: "Error sending email" });
 
     return res.status(200).json({
         ok: `${userFound.name}, we will send you an email with instructions to reset your password at ${value.email}. Expires in 10 minutes.`,
@@ -75,29 +70,23 @@ export async function updatePassword(
         ...req.body,
         ...req.params,
     });
-    if (error)
-        return res.status(400).json({ errors: { error: error.message } });
+    if (error) return res.status(400).json({ error: error.message });
 
     const userFound = await User.getUser(value.id);
-    if (!userFound)
-        return res.status(400).json({ errors: { error: "User not found" } });
+    if (!userFound) return res.status(400).json({ error: "User not found" });
 
     const auth = await Security.verifyPassword(
         value.current_password,
         userFound.password
     );
     if (!auth)
-        return res
-            .status(400)
-            .json({ errors: { error: "Current password incorrect" } });
+        return res.status(400).json({ error: "Current password incorrect" });
 
     const passwordChanged = await User.updateUser(userFound.id, {
         password: await Security.encryptPassword(value.new_password),
     } as IUser);
     if (!passwordChanged)
-        return res
-            .status(400)
-            .json({ errors: { error: "Error updating password" } });
+        return res.status(400).json({ error: "Error updating password" });
 
     return res.status(200).json({ ok: "Password updated successfully" });
 }
@@ -107,8 +96,7 @@ export async function updatePasswordWithJwt(
     res: Response
 ): Promise<Response> {
     const { error, value } = forgetPswSchema.validate(req.body);
-    if (error)
-        return res.status(400).json({ errors: { error: error.message } });
+    if (error) return res.status(400).json({ error: error.message });
 
     try {
         const payload = Jwt.verify(
@@ -118,29 +106,23 @@ export async function updatePasswordWithJwt(
 
         const userFound = await User.getUser(payload._id, payload.email);
         if (!userFound)
-            return res
-                .status(400)
-                .json({ errors: { error: "User not found" } });
+            return res.status(400).json({ error: "User not found" });
 
         const auth = await Security.verifyPassword(
             value.password,
             userFound.password
         );
         if (auth)
-            return res
-                .status(400)
-                .json({ errors: { error: "None password updated" } });
+            return res.status(400).json({ error: "None password updated" });
 
         const passwordChanged = await User.updateUser(userFound.id, {
             password: await Security.encryptPassword(value.password),
         } as IUser);
         if (!passwordChanged)
-            return res
-                .status(400)
-                .json({ errors: { error: "Error updating password" } });
+            return res.status(400).json({ error: "Error updating password" });
 
         return res.status(200).json({ ok: "Password updated successfully" });
     } catch (error: any) {
-        return res.status(401).json({ errors: { error: error.message } });
+        return res.status(401).json({ error: error.message });
     }
 }

@@ -7,22 +7,20 @@ import { authSchema } from "../validation/joi";
 
 export async function auth(req: Request, res: Response): Promise<Response> {
     const { error, value } = authSchema.validate(req.body);
-    if (error)
-        return res.status(400).json({ errors: { error: error.message } });
+    if (error) return res.status(400).json({ error: error.message });
 
     const userFound = await User.getUser(
         undefined,
         `${value.username}@itfip.edu.co`
     );
-    if (!userFound)
-        return res.status(401).json({ errors: { error: "Bad credentials" } });
+    if (!userFound) return res.status(401).json({ error: "Bad credentials" });
 
     const passwordVerified = await Security.verifyPassword(
         value.password,
         userFound.password
     );
     if (!passwordVerified)
-        return res.status(401).json({ errors: { error: "Bad credentials" } });
+        return res.status(401).json({ error: "Bad credentials" });
 
     const permissions = (userFound.permissions as string).split(",");
     const token = Jwt.sign(

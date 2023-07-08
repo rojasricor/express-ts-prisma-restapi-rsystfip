@@ -12,8 +12,7 @@ export async function createPerson(
     res: Response
 ): Promise<Response> {
     const { error, value } = schedulerSchema.validate(req.body);
-    if (error)
-        return res.status(400).json({ errors: { error: error.message } });
+    if (error) return res.status(400).json({ error: error.message });
 
     if (value.person === "4") {
         const deanFound = await Dean.getDean(value.doc);
@@ -39,9 +38,7 @@ export async function createPerson(
     };
     const personCreated = await People.createPerson(newPerson);
     if (!personCreated)
-        return res
-            .status(400)
-            .json({ errors: { error: "Error creating person" } });
+        return res.status(400).json({ error: "Error creating person" });
 
     const scheduleData: IScheduleData = {
         person_id: (await People.getLastPerson())?.id,
@@ -50,9 +47,7 @@ export async function createPerson(
     };
     const newSchedule = await Schedule.createSchedule(scheduleData);
     if (!newSchedule)
-        return res
-            .status(400)
-            .json({ errors: { error: "Error creating schedule" } });
+        return res.status(400).json({ error: "Error creating schedule" });
 
     return res.status(201).json({
         ok: "Person created successfully",
@@ -65,12 +60,11 @@ export async function getPerson(
     res: Response
 ): Promise<Response> {
     const { error, value } = idSchema.validate(req.params);
-    if (error)
-        return res.status(400).json({ errors: { error: error.message } });
+    if (error) return res.status(400).json({ error: error.message });
 
     const personFound = await People.getPerson(value.id);
     if (!personFound)
-        return res.status(400).json({ errors: { error: "Person not found" } });
+        return res.status(400).json({ error: "Person not found" });
 
     return res.status(200).json(personFound);
 }
@@ -83,12 +77,11 @@ export async function updatePerson(
         ...req.params,
         ...req.body,
     });
-    if (error)
-        return res.status(400).json({ errors: { error: error.message } });
+    if (error) return res.status(400).json({ error: error.message });
 
     const personFound = await People.getPerson(value.id);
     if (!personFound)
-        return res.status(400).json({ errors: { error: "Person not found" } });
+        return res.status(400).json({ error: "Person not found" });
 
     const dataPerson: IPeople = {
         name: value.name,
@@ -100,9 +93,7 @@ export async function updatePerson(
     };
     const peopleEdited = await People.updatePerson(value.id, dataPerson);
     if (!peopleEdited)
-        return res
-            .status(400)
-            .json({ errors: { error: "None person updated" } });
+        return res.status(400).json({ error: "None person updated" });
 
     return res
         .status(200)
@@ -114,10 +105,7 @@ export async function getPeople(
     res: Response
 ): Promise<Response> {
     const people = await People.getPeople();
-    if (!people)
-        return res
-            .status(400)
-            .json({ errors: { error: "Error getting people" } });
+    if (!people) return res.status(400).json({ error: "Error getting people" });
 
     return res.status(200).json(people);
 }
@@ -130,7 +118,7 @@ export async function getCancelledPeople(
     if (!peopleCancelled)
         return res
             .status(400)
-            .json({ errors: { error: "Error getting cancelled people" } });
+            .json({ error: "Error getting cancelled people" });
 
     return res.status(200).json(peopleCancelled);
 }
