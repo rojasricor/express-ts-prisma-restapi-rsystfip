@@ -24,9 +24,7 @@ export async function verifyJwtForRecoverPassword(
         if (!payload.email) return res.status(401).json("Unauthorized");
         return res.status(200).json({ tokenIsValid: true });
     } catch (error: any) {
-        return res
-            .status(401)
-            .json({ tokenIsValid: false, error: error.message });
+        return res.status(401).json({ error: error.message });
     }
 }
 
@@ -46,7 +44,7 @@ export async function sendJwtForRecoverPassword(
         SECRET_KEY || "secretkey",
         { expiresIn: 10 * 60 }
     );
-    const resetPasswordLink = `${value.APP_ROUTE}/${value.email}/${token}`;
+    const resetPasswordLink = `${value.APP_ROUTE}/${token}`;
     const msg = `Estimado usuario, hemos recibido una solicitud de cambio de contraseña para su cuenta. Si no ha sido usted, por favor ignore este correo electrónico.<br>Si es así, por favor ingrese al siguiente link para restablecer su contraseña:<br>${resetPasswordLink}<br><strong>Este link expirará en 10 minutos.</strong><br><br>Saludos, <br>Equipo ITFIP - RSystfip`;
 
     const linkSended = await sgMail.sendEmail(
