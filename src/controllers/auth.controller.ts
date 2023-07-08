@@ -25,6 +25,7 @@ export async function auth(req: Request, res: Response): Promise<Response> {
         return res.status(401).json({ errors: { error: "Bad credentials" } });
 
     const permissions = (userFound.permissions as string).split(",");
+    console.log(permissions);
     const token = Jwt.sign(
         {
             _id: userFound.id,
@@ -36,5 +37,8 @@ export async function auth(req: Request, res: Response): Promise<Response> {
         { expiresIn: 7 * 24 * 60 * 60 }
     );
 
-    return res.status(200).header("Authorization", token).json(userFound);
+    return res
+        .status(200)
+        .header("Authorization", token)
+        .json({ ...userFound, permissions });
 }
