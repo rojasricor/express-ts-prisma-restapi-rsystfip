@@ -11,6 +11,9 @@ import resourceRoutes from "./routes/resource.routes";
 import scheduleRoutes from "./routes/schedule.routes";
 import statisticRoutes from "./routes/statistic.routes";
 import userRoutes from "./routes/user.routes";
+import authMiddleware from "./middlewares/auth.middleware";
+import sessionRoutes from "./routes/session.routes";
+import roleMiddleware from "./middlewares/role.middleware";
 
 export class App {
     private app: express.Application;
@@ -33,15 +36,44 @@ export class App {
     }
 
     routes() {
-        this.app.use("/api/auth", authRoutes);
-        this.app.use("/api/account", accountRoutes);
-        this.app.use("/api/users", userRoutes);
-        this.app.use("/api/people", peopleRoutes);
-        this.app.use("/api/schedule", scheduleRoutes);
-        this.app.use("/api/resource", resourceRoutes);
-        this.app.use("/api/deans", deanRoutes);
-        this.app.use("/api/reports", reportRoutes);
-        this.app.use("/api/statistics", statisticRoutes);
+        this.app.use("/api/auth", authRoutes); // No middlewares
+        this.app.use("/api/session", sessionRoutes); // No middlewares
+        this.app.use("/api/account", accountRoutes); // Handle middlewares independient
+        this.app.use(
+            "/api/users",
+            [authMiddleware(), roleMiddleware()],
+            userRoutes
+        );
+        this.app.use(
+            "/api/people",
+            [authMiddleware(), roleMiddleware()],
+            peopleRoutes
+        );
+        this.app.use(
+            "/api/schedule",
+            [authMiddleware(), roleMiddleware()],
+            scheduleRoutes
+        );
+        this.app.use(
+            "/api/resource",
+            [authMiddleware(), roleMiddleware()],
+            resourceRoutes
+        );
+        this.app.use(
+            "/api/deans",
+            [authMiddleware(), roleMiddleware()],
+            deanRoutes
+        );
+        this.app.use(
+            "/api/reports",
+            [authMiddleware(), roleMiddleware()],
+            reportRoutes
+        );
+        this.app.use(
+            "/api/statistics",
+            [authMiddleware(), roleMiddleware()],
+            statisticRoutes
+        );
     }
 
     listen() {

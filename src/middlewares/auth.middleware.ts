@@ -1,21 +1,23 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import Jwt from "jsonwebtoken";
 import { SECRET_KEY } from "../config";
 import { IPayload } from "../interfaces/IPayload";
 
-export async function verifyJwtOfSession(
+function validateAuth(
     req: Request,
-    res: Response
-): Promise<Response> {
+    res: Response,
+    next: NextFunction
+): Response | void {
     const jwt = req.headers.authorization;
     if (!jwt) return res.status(401).json("Not session provided");
 
     try {
         const payload = Jwt.verify(jwt, SECRET_KEY || "secretkey") as IPayload;
-        return res
-            .status(200)
-            .json({ ok: { isValid: true, decoded: payload } });
+        req.payloadUser = payload;
+        return next();
     } catch (error: any) {
         return res.status(401).json({ errors: { error: error.message } });
     }
 }
+
+export default () => validateAuth;
