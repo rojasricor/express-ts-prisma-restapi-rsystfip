@@ -32,7 +32,9 @@ export async function deleteUser(
     if (!userDeleted)
         return res.status(400).json({ error: "Error deleting user" });
 
-    return res.status(200).json({ ok: true, userDeleted });
+    return res
+        .status(200)
+        .json({ ok: "User deleted successfully", userDeleted });
 }
 
 export async function createUser(

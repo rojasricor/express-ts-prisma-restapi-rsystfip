@@ -7,7 +7,7 @@ import { IScheduleData } from "../interfaces/IScheduleData";
 export async function createSchedule(
     scheduleData: IScheduleData
 ): Promise<IScheduleData | null> {
-    const conn = await connect();
+    const conn = connect();
     if (!conn) return null;
     const [result] = await conn.query<OkPacket>(
         "INSERT INTO scheduling SET ?",
@@ -19,7 +19,7 @@ export async function createSchedule(
 export async function getOneSchedule(
     id: IScheduleData["person_id"]
 ): Promise<(IScheduleData & IPeople) | null> {
-    const conn = await connect();
+    const conn = connect();
     if (!conn) return null;
     const [rows] = await conn.query<RowDataPacket[]>(
         "SELECT s.person_id, p.name, p.telephone AS tel, p.email, s.start_date, s.status FROM scheduling s INNER JOIN people p ON p.id = s.person_id WHERE s.person_id = ?",
@@ -29,7 +29,7 @@ export async function getOneSchedule(
 }
 
 export async function getSchedule(): Promise<ICalendar[] | null> {
-    const conn = await connect();
+    const conn = connect();
     if (!conn) return null;
     const [rows] = await conn.query<RowDataPacket[]>(
         "SELECT s.person_id AS id, p.name AS title, s.start_date AS start, s.end_date AS end, s.color FROM scheduling s INNER JOIN people p ON p.id = s.person_id WHERE s.status = 'scheduled'"
@@ -42,7 +42,7 @@ export async function updateSchedule(
     person_id: IScheduleData["person_id"],
     start_date: IScheduleData["start_date"]
 ): Promise<IScheduleData | null> {
-    const conn = await connect();
+    const conn = connect();
     if (!conn) return null;
     const [result] = await conn.query<OkPacket>(
         "UPDATE scheduling SET ? WHERE person_id = ? AND start_date = ?",

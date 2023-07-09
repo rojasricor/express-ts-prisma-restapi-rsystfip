@@ -9,7 +9,7 @@ export async function getStatistics(
     start: IScheduleData["start_date"],
     end: IScheduleData["end_date"]
 ): Promise<IStatistic[] | null> {
-    const conn = await connect();
+    const conn = connect();
     if (!conn) return null;
     const [rows] = await conn.query<RowDataPacket[]>(
         "SELECT SUM(CASE WHEN s.status = ? THEN 1 ELSE 0 END) AS scheduling_count, c.category FROM scheduling s INNER JOIN people p ON p.id = s.person_id INNER JOIN categories c ON c.id = p.category_id WHERE s.start_date >= ? AND s.start_date <= ? GROUP BY p.category_id",
@@ -23,7 +23,7 @@ export async function getMostAgendatedOnRange(
     start: IScheduleData["start_date"],
     end: IScheduleData["end_date"]
 ): Promise<ICount[] | null> {
-    const conn = await connect();
+    const conn = connect();
     if (!conn) return null;
     const [rows] = await conn.query<RowDataPacket[]>(
         "SELECT c.category, COUNT(*) AS counts FROM scheduling s INNER JOIN people p ON p.id = s.person_id INNER JOIN categories c ON c.id = p.category_id WHERE s.status = ? AND s.date_filter >= ? AND s.date_filter <= ? GROUP BY p.category_id, c.category ORDER BY counts DESC LIMIT 10",
@@ -35,7 +35,7 @@ export async function getMostAgendatedOnRange(
 export async function getMostAgendatedAllTime(
     status: IScheduleData["status"]
 ): Promise<ICount[] | null> {
-    const conn = await connect();
+    const conn = connect();
     if (!conn) return null;
     const [rows] = await conn.query<RowDataPacket[]>(
         "SELECT c.category, COUNT(*) AS counts FROM scheduling s INNER JOIN people p ON p.id = s.person_id INNER JOIN categories c ON c.id = p.category_id WHERE s.status = ? GROUP BY p.category_id, c.category ORDER BY counts DESC LIMIT 10",

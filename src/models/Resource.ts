@@ -5,7 +5,7 @@ import { connect } from "../db";
 import { ICategory } from "../interfaces/ICategory";
 
 export async function getCategories(): Promise<ICategory[] | null> {
-    const conn = await connect();
+    const conn = connect();
     if (!conn) return null;
     const [rows] = await conn.query<RowDataPacket[]>(
         "SELECT id, category FROM categories"
@@ -14,7 +14,7 @@ export async function getCategories(): Promise<ICategory[] | null> {
 }
 
 export async function getDocuments(): Promise<IDocument[] | null> {
-    const conn = await connect();
+    const conn = connect();
     if (!conn) return null;
     const [rows] = await conn.query<RowDataPacket[]>(
         "SELECT id, description FROM documents"
@@ -23,7 +23,7 @@ export async function getDocuments(): Promise<IDocument[] | null> {
 }
 
 export async function getFaculties(): Promise<IFaculty[] | null> {
-    const conn = await connect();
+    const conn = connect();
     if (!conn) return null;
     const [rows] = await conn.query<RowDataPacket[]>(
         "SELECT id, facultie FROM faculties"
