@@ -31,7 +31,7 @@ export async function createUser(user: IUser): Promise<IUser | null> {
         user,
     ]);
     delete user.password;
-    return result.affectedRows > 0 ? { ...user } : null;
+    return result.affectedRows > 0 ? { ...user, id: result.insertId } : null;
 }
 
 export async function deleteUser(id: IUser["id"]): Promise<boolean> {

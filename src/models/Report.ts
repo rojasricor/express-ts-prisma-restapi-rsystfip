@@ -20,21 +20,21 @@ export async function getReports(
 export async function getReportCount(
     start: IScheduleData["start_date"],
     end: IScheduleData["end_date"]
-): Promise<ICount | null> {
+): Promise<ICount[] | null> {
     const conn = await connect();
     if (!conn) return null;
     const [rows] = await conn.query<RowDataPacket[]>(
         "SELECT c.category, COUNT(s.person_id) AS counts FROM scheduling s INNER JOIN people p ON p.id = s.person_id INNER JOIN categories c ON c.id = p.category_id WHERE s.date_filter >= ? AND s.date_filter <= ? GROUP BY p.category_id, c.category ORDER BY counts DESC LIMIT 10",
         [start, end]
     );
-    return rows[0] as ICount;
+    return rows as ICount[];
 }
 
-export async function getReportCounts(): Promise<ICount | null> {
+export async function getReportCounts(): Promise<ICount[] | null> {
     const conn = await connect();
     if (!conn) return null;
     const [rows] = await conn.query<RowDataPacket[]>(
         "SELECT c.category, COUNT(s.person_id) AS counts FROM scheduling s INNER JOIN people p ON p.id = s.person_id INNER JOIN categories c ON c.id = p.category_id GROUP BY p.category_id, c.category ORDER BY counts DESC LIMIT 10"
     );
-    return rows[0] as ICount;
+    return rows as ICount[];
 }
