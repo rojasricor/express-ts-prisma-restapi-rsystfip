@@ -4,7 +4,7 @@ import { ICancelledSchedule } from "../interfaces/ICancelledSchedule";
 import { IScheduleData } from "../interfaces/IScheduleData";
 import * as Cancellation from "../models/Cancellation";
 import * as Schedule from "../models/Schedule";
-import { cancellSchema } from "../validation/joi";
+import { cancellSchema, scheduleSchema } from "../validation/joi";
 
 export async function getSchedule(
     req: Request,
@@ -15,6 +15,22 @@ export async function getSchedule(
         return res.status(500).json({ error: "Error getting schedules" });
 
     return res.status(200).json(schedules);
+}
+
+export async function createSchedule(
+    req: Request,
+    res: Response
+): Promise<Response> {
+    const { error, value } = scheduleSchema.validate(req.body);
+    if (error) return res.status(400).json({ error: error.message });
+
+    const scheduleCreated = await Schedule.createSchedule(
+        value as IScheduleData
+    );
+    if (!scheduleCreated)
+        return res.status(500).json({ error: "Error creating schedule" });
+
+    return res.status(201).json(scheduleCreated);
 }
 
 export async function cancellSchedule(

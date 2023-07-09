@@ -27,5 +27,5 @@ export async function createDean(dean: IDean): Promise<IDean | null> {
     const [result] = await conn.query<OkPacket>("INSERT INTO deans SET ?", [
         dean,
     ]);
-    return result.affectedRows > 0 ? { ...dean, _id: result.insertId } : null;
+    return result.affectedRows > 0 ? { ...dean } : null;
 }

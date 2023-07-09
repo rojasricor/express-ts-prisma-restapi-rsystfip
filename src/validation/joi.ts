@@ -100,6 +100,17 @@ export const forgetPswSchema = JoiDefaults.object({
         .messages({ "any.only": "Passwords does not match" }),
 });
 
+export const deanSchema = JoiDefaults.object({
+    _id: Joi.string()
+        .regex(/^[0-9]+$/)
+        .min(8)
+        .max(10)
+        .required()
+        .messages({ "string.pattern.base": '"document" invalid' }),
+    dean: Joi.string().min(8).max(50).required(),
+    facultie_id: Joi.string().length(1).required(),
+});
+
 export const userSchema = emailItfipSchema.keys({
     role: Joi.string().length(1).required(),
     name: Joi.string().min(3).max(25).required(),
@@ -137,6 +148,26 @@ export const peopleEditSchema = idSchema.keys({
         .messages({ "string.pattern.base": '"document" invalid' }),
     facultie: Joi.string().length(1).required(),
     asunt: Joi.string().min(10).max(150).required(),
+});
+
+export const scheduleSchema = statusSchema.keys({
+    person_id: Joi.string().min(1).max(11).required(),
+    color: Joi.string().min(4).max(7).required(),
+    date_filter: Joi.when("status", {
+        is: "scheduled",
+        then: Joi.string().required(),
+        otherwise: Joi.optional(),
+    }),
+    start_date: Joi.when("status", {
+        is: "scheduled",
+        then: Joi.string().required(),
+        otherwise: Joi.optional(),
+    }),
+    end_date: Joi.when("status", {
+        is: "scheduled",
+        then: Joi.string().required(),
+        otherwise: Joi.optional(),
+    }),
 });
 
 export const schedulerSchema = statusSchema.keys({

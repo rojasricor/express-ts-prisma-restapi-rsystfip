@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
-import { IDean } from "../interfaces/IDean";
 import { IPeople } from "../interfaces/IPeople";
 import { IScheduleData } from "../interfaces/IScheduleData";
-import * as Dean from "../models/Dean";
 import * as People from "../models/People";
 import * as Schedule from "../models/Schedule";
 import { idSchema, peopleEditSchema, schedulerSchema } from "../validation/joi";
@@ -13,18 +11,6 @@ export async function createPerson(
 ): Promise<Response> {
     const { error, value } = schedulerSchema.validate(req.body);
     if (error) return res.status(400).json({ error: error.message });
-
-    if (value.person === "4") {
-        const deanFound = await Dean.getDean(value.doc);
-        if (!deanFound) {
-            const newDean: IDean = {
-                _id: value.doc,
-                dean: value.name,
-                facultie_id: value.facultie,
-            };
-            await Dean.createDean(newDean);
-        }
-    }
 
     const newPerson: IPeople = {
         name: value.name,
@@ -40,18 +26,9 @@ export async function createPerson(
     if (!personCreated)
         return res.status(500).json({ error: "Error creating person" });
 
-    const scheduleData: IScheduleData = {
-        person_id: (await People.getLastPerson())?.id,
-        status: value.status,
-        color: value.color,
-    };
-    const newSchedule = await Schedule.createSchedule(scheduleData);
-    if (!newSchedule)
-        return res.status(500).json({ error: "Error creating schedule" });
-
     return res.status(201).json({
         ok: "Person created successfully",
-        personCreated: { ...personCreated, ...newSchedule },
+        personCreated: { ...personCreated },
     });
 }
 
