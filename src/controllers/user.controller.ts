@@ -9,14 +9,14 @@ export async function getUser(req: Request, res: Response): Promise<Response> {
     if (error) return res.status(400).json({ error: error.message });
 
     const userFound = await User.getUser(value.id);
-    if (!userFound) return res.status(400).json({ error: "User not found" });
+    if (!userFound) return res.status(404).json({ error: "User not found" });
 
     return res.status(200).json(userFound);
 }
 
 export async function getUsers(req: Request, res: Response): Promise<Response> {
     const users = await User.getUsers();
-    if (!users) return res.status(400).json({ error: "Error getting users" });
+    if (!users) return res.status(500).json({ error: "Error getting users" });
 
     return res.status(200).json(users);
 }
@@ -30,10 +30,10 @@ export async function deleteUser(
 
     const userDeleted = await User.deleteUser(value.id);
     if (!userDeleted)
-        return res.status(400).json({ error: "Error deleting user" });
+        return res.status(500).json({ error: "Error deleting user" });
 
     return res
-        .status(200)
+        .status(204)
         .json({ ok: "User deleted successfully", userDeleted });
 }
 
@@ -62,15 +62,15 @@ export async function createUser(
         };
         const userCreated = await User.createUser(newUser);
         if (!userCreated)
-            return res.status(400).json({ error: "Error creating user" });
+            return res.status(500).json({ error: "Error creating user" });
 
         return res
-            .status(200)
+            .status(201)
             .json({ ok: "User created successfully", userCreated });
     }
 
     if (value.email === userExists.email)
-        return res.status(400).json({ error: "Email already registered" });
+        return res.status(409).json({ error: "Email already registered" });
 
-    return res.status(400).json({ error: "User already exists" });
+    return res.status(409).json({ error: "User already exists" });
 }

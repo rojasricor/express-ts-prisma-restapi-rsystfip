@@ -11,7 +11,7 @@ export async function getReports(
 
     const reports = await Report.getReports(value.start, value.end);
     if (!reports)
-        return res.status(400).json({ error: "Error getting reports" });
+        return res.status(500).json({ error: "Error getting reports" });
 
     return res.status(200).json(reports);
 }
@@ -25,7 +25,7 @@ export async function getReportCount(
 
     const count = await Report.getReportCount(value.start, value.end);
     if (!count)
-        return res.status(400).json({ error: "Error getting report count" });
+        return res.status(500).json({ error: "Error getting report count" });
 
     return res.status(200).json(count);
 }
@@ -36,7 +36,7 @@ export async function getReportCounts(
 ): Promise<Response> {
     const counts = await Report.getReportCounts();
     if (!counts)
-        return res.status(400).json({ error: "Error getting report counts" });
+        return res.status(500).json({ error: "Error getting report counts" });
 
     return res.status(200).json(counts);
 }

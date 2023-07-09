@@ -13,7 +13,7 @@ export async function auth(req: Request, res: Response): Promise<Response> {
         undefined,
         `${value.username}@itfip.edu.co`
     );
-    if (!userFound) return res.status(401).json({ error: "Bad credentials" });
+    if (!userFound) return res.status(404).json({ error: "Bad credentials" });
 
     const passwordVerified = await Security.verifyPassword(
         value.password,

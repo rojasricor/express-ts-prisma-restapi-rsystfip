@@ -38,7 +38,7 @@ export async function createPerson(
     };
     const personCreated = await People.createPerson(newPerson);
     if (!personCreated)
-        return res.status(400).json({ error: "Error creating person" });
+        return res.status(500).json({ error: "Error creating person" });
 
     const scheduleData: IScheduleData = {
         person_id: (await People.getLastPerson())?.id,
@@ -47,7 +47,7 @@ export async function createPerson(
     };
     const newSchedule = await Schedule.createSchedule(scheduleData);
     if (!newSchedule)
-        return res.status(400).json({ error: "Error creating schedule" });
+        return res.status(500).json({ error: "Error creating schedule" });
 
     return res.status(201).json({
         ok: "Person created successfully",
@@ -64,7 +64,7 @@ export async function getPerson(
 
     const personFound = await People.getPerson(value.id);
     if (!personFound)
-        return res.status(400).json({ error: "Person not found" });
+        return res.status(404).json({ error: "Person not found" });
 
     return res.status(200).json(personFound);
 }
@@ -81,7 +81,7 @@ export async function updatePerson(
 
     const personFound = await People.getPerson(value.id);
     if (!personFound)
-        return res.status(400).json({ error: "Person not found" });
+        return res.status(404).json({ error: "Person not found" });
 
     const dataPerson: IPeople = {
         name: value.name,
@@ -93,7 +93,7 @@ export async function updatePerson(
     };
     const peopleEdited = await People.updatePerson(value.id, dataPerson);
     if (!peopleEdited)
-        return res.status(400).json({ error: "None person updated" });
+        return res.status(500).json({ error: "None person updated" });
 
     return res
         .status(200)
@@ -105,7 +105,7 @@ export async function getPeople(
     res: Response
 ): Promise<Response> {
     const people = await People.getPeople();
-    if (!people) return res.status(400).json({ error: "Error getting people" });
+    if (!people) return res.status(500).json({ error: "Error getting people" });
 
     return res.status(200).json(people);
 }
@@ -117,7 +117,7 @@ export async function getCancelledPeople(
     const peopleCancelled = await People.getCancelledPeople();
     if (!peopleCancelled)
         return res
-            .status(400)
+            .status(500)
             .json({ error: "Error getting cancelled people" });
 
     return res.status(200).json(peopleCancelled);

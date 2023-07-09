@@ -12,7 +12,7 @@ export async function getSchedule(
 ): Promise<Response> {
     const schedules = await Schedule.getSchedule();
     if (!schedules)
-        return res.status(400).json({ error: "Error getting schedules" });
+        return res.status(500).json({ error: "Error getting schedules" });
 
     return res.status(200).json(schedules);
 }
@@ -29,7 +29,7 @@ export async function cancellSchedule(
 
     const scheduleFound = await Schedule.getOneSchedule(value.id);
     if (!scheduleFound)
-        return res.status(400).json({ error: "Schedule not found" });
+        return res.status(404).json({ error: "Schedule not found" });
 
     if (scheduleFound.status === "cancelled")
         return res.status(400).json({ error: "Schedule already cancelled" });
@@ -43,7 +43,9 @@ export async function cancellSchedule(
         msg
     );
     if (!msgSended?.response)
-        return res.status(400).json({ error: "Schedule not cancelled" });
+        return res
+            .status(500)
+            .json({ error: "Error reporting the cancellation" });
 
     const newScheduleCancelled: IScheduleData = { status: "cancelled" };
     const scheduleCancelled = await Schedule.updateSchedule(
@@ -52,7 +54,7 @@ export async function cancellSchedule(
         scheduleFound.start_date
     );
     if (!scheduleCancelled)
-        return res.status(400).json({ error: "Schedule not cancelled" });
+        return res.status(500).json({ error: "Schedule not cancelled" });
 
     const newCancellation: ICancelledSchedule = {
         cancelled_asunt: value.cancelled_asunt,
@@ -60,7 +62,7 @@ export async function cancellSchedule(
     };
     const cancellation = await Cancellation.createCancellation(newCancellation);
     if (!cancellation)
-        return res.status(400).json({ error: "Schedule not cancelled" });
+        return res.status(500).json({ error: "Error cancelling schedule" });
 
     return res.status(200).json({
         ok: "Schedule cancelled successfully",
