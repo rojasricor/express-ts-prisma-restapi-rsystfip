@@ -16,7 +16,7 @@ export async function createSchedule(
     return result.affectedRows > 0 ? { ...scheduleData } : null;
 }
 
-export async function getOneSchedule(
+export async function getSchedule(
     id: IScheduleData["person_id"]
 ): Promise<(IScheduleData & IPeople) | null> {
     const conn = connect();
@@ -28,7 +28,7 @@ export async function getOneSchedule(
     return rows[0] as IScheduleData & IPeople;
 }
 
-export async function getSchedule(): Promise<ICalendar[] | null> {
+export async function getSchedules(): Promise<ICalendar[] | null> {
     const conn = connect();
     if (!conn) return null;
     const [rows] = await conn.query<RowDataPacket[]>(

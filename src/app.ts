@@ -14,6 +14,7 @@ import scheduleRoutes from "./routes/schedule.routes";
 import sessionRoutes from "./routes/session.routes";
 import statisticRoutes from "./routes/statistic.routes";
 import userRoutes from "./routes/user.routes";
+import cancellationRoutes from "./routes/cancellation.routes";
 
 export class App {
     private app: express.Application;
@@ -53,6 +54,11 @@ export class App {
             "/api/schedule",
             [authMiddleware(), roleMiddleware("admin", "secretaria", "rector")],
             scheduleRoutes
+        );
+        this.app.use(
+            "/api/cancellation",
+            [authMiddleware(), roleMiddleware("admin", "secretaria", "rector")],
+            cancellationRoutes
         );
         this.app.use(
             "/api/resource",

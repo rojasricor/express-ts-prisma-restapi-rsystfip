@@ -61,6 +61,11 @@ export const cancellSchema = idSchema.keys({
     cancelled_asunt: Joi.string().min(10).max(150).required(),
 });
 
+export const cancellationSchema = JoiDefaults.object({
+    person_id: Joi.string().min(1).max(11).required(),
+    cancelled_asunt: Joi.string().min(10).max(150).required(),
+});
+
 export const changePswSchema = idSchema.keys({
     current_password: Joi.string().min(8).max(30).required(),
     new_password: Joi.string()
