@@ -37,47 +37,50 @@ export class App {
     }
 
     routes() {
-        this.app.use("/api/auth", authRoutes); // No middlewares
-        this.app.use("/api/session", sessionRoutes); // No middlewares
-        this.app.use("/api/account", accountRoutes); // Handle middlewares independient
-        this.app.use(
-            "/api/users",
-            [authMiddleware(), roleMiddleware("admin", "secretaria", "rector")],
-            userRoutes
-        );
+        this.app.use("/api/auth", authRoutes);
+        this.app.use("/api/session", sessionRoutes);
+        this.app.use("/api/account", accountRoutes);
+        this.app.use("/api/users", authMiddleware(), userRoutes);
         this.app.use(
             "/api/people",
-            [authMiddleware(), roleMiddleware("admin", "secretaria", "rector")],
+            authMiddleware(),
+            roleMiddleware("admin", "secretaria", "rector"),
             peopleRoutes
         );
         this.app.use(
             "/api/schedule",
-            [authMiddleware(), roleMiddleware("admin", "secretaria", "rector")],
+            authMiddleware(),
+            roleMiddleware("admin", "secretaria", "rector"),
             scheduleRoutes
         );
         this.app.use(
             "/api/cancellation",
-            [authMiddleware(), roleMiddleware("admin", "secretaria", "rector")],
+            authMiddleware(),
+            roleMiddleware("admin", "secretaria", "rector"),
             cancellationRoutes
         );
         this.app.use(
             "/api/resource",
-            [authMiddleware(), roleMiddleware("admin", "secretaria", "rector")],
+            authMiddleware(),
+            roleMiddleware("admin", "secretaria", "rector"),
             resourceRoutes
         );
         this.app.use(
             "/api/deans",
-            [authMiddleware(), roleMiddleware("admin", "secretaria", "rector")],
+            authMiddleware(),
+            roleMiddleware("admin", "secretaria", "rector"),
             deanRoutes
         );
         this.app.use(
             "/api/reports",
-            [authMiddleware(), roleMiddleware("admin", "secretaria", "rector")],
+            authMiddleware(),
+            roleMiddleware("admin", "secretaria"),
             reportRoutes
         );
         this.app.use(
             "/api/statistics",
-            [authMiddleware(), roleMiddleware("admin", "secretaria", "rector")],
+            authMiddleware(),
+            roleMiddleware("admin", "secretaria"),
             statisticRoutes
         );
     }
