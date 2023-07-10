@@ -33,7 +33,7 @@ export async function deleteUser(
         return res.status(500).json({ error: "Error deleting user" });
 
     return res
-        .status(204)
+        .status(200)
         .json({ ok: "User deleted successfully", userDeleted });
 }
 
