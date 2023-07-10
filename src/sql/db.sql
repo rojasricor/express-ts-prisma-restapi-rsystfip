@@ -25,9 +25,6 @@ CREATE TABLE `deans` (
   `facultie_id` tinyint(1) NOT NULL COMMENT 'Campo que guarda el id de facultad a la que pertenece el decano del ITFIP.'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Tabla que almacena los datos de decanos del ITFIP, que seran utilizados para el agendamiento de personas mas rapidamente, haciendo un autocompletado.';
 
-INSERT INTO `deans` (`_id`, `dean`, `facultie_id`) VALUES
-('65701167', 'Ricardo Rojas', 1);
-
 CREATE TABLE `documents` (
   `id` tinyint(1) UNSIGNED NOT NULL COMMENT 'Campo que guarda el id del tipo de documento, (autoincremental).',
   `document` varchar(3) NOT NULL COMMENT 'Campo que guarda una abreviacion corta del tipo de documento.',
@@ -64,12 +61,6 @@ CREATE TABLE `people` (
   `come_asunt` varchar(150) NOT NULL COMMENT 'Campo que guarda el asunto, motivo o razon de la visita a la rectoria, para su posterior agendamiento.'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Tabla que almacena todos los datos personales de las personas que han sido agendadas.';
 
-INSERT INTO `people` (`id`, `name`, `document_id`, `document_number`, `telephone`, `email`, `category_id`, `facultie_id`, `come_asunt`) VALUES
-(2, 'ricardo rojas', 1, '65701167', NULL, NULL, 3, 1, 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\\n\\n'),
-(3, 'ricardo rojas', 1, '65701167', NULL, NULL, 3, 1, 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n\n'),
-(4, 'Ricardo Rojas', 1, '65701167', NULL, NULL, 4, 1, 'no hay nada ajajajjaa'),
-(5, 'Ricardo Rojas', 1, '65701167', '3173926578', 'rrojas48@itfip.eu.co', 4, 1, 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
-
 CREATE TABLE `roles` (
   `_id` enum('admin','rector','secretaria') NOT NULL COMMENT 'Campo que guarda el rol que tiene el usaurio, existen 3: admin, rector, secretaria.',
   `permissions` set('admin','add','schedule','reports','statistics') NOT NULL COMMENT 'Campo que guarda los permisos que tiene el usaurio'
@@ -89,11 +80,6 @@ CREATE TABLE `scheduling` (
   `status` enum('scheduled','daily','cancelled') NOT NULL COMMENT 'Campo que guarda el tipo de agendamiento realizado, puede ser de dos tipos,agendamiento programado o agendamiento al dia.',
   `color` char(7) NOT NULL DEFAULT '#388cdc' COMMENT 'Campo que guarda un valor de texto correspondiente al color que tendra el registro al ser agendado.'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Tabla que almacena todos los agendamientos en fecha del aplicativo.';
-
-INSERT INTO `scheduling` (`person_id`, `date_filter`, `start_date`, `end_date`, `modification`, `status`, `color`) VALUES
-(3, '2023-07-08 18:39:56', '2023-07-08 18:39:56', '2023-07-08 18:39:56', '2023-07-08 18:39:56', 'daily', '#388cdc'),
-(4, '2023-07-08 18:46:01', '2023-07-08 18:46:01', '2023-07-08 18:46:01', '2023-07-08 18:46:01', 'daily', '#388cdc'),
-(5, '2023-07-08 18:58:50', '2023-07-08 18:58:50', '2023-07-08 18:58:50', '2023-07-08 18:58:50', 'scheduled', '#388cdc');
 
 CREATE TABLE `users` (
   `id` tinyint(1) UNSIGNED NOT NULL COMMENT 'Campo que guarda el id de los usuarios del aplicativo, con acceso permitido (unique).',
@@ -143,7 +129,7 @@ ALTER TABLE `faculties`
   MODIFY `id` tinyint(1) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Campo que guarda el id de la facultad, (autoincremental).', AUTO_INCREMENT=5;
 
 ALTER TABLE `people`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Campo que guarda el id de las personas agendadas (autoincremental).', AUTO_INCREMENT=6;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Campo que guarda el id de las personas agendadas (autoincremental).';
 
 ALTER TABLE `users`
   MODIFY `id` tinyint(1) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Campo que guarda el id de los usuarios del aplicativo, con acceso permitido (unique).', AUTO_INCREMENT=4;
