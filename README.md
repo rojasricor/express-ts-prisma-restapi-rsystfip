@@ -1,3 +1,3 @@
-# express-ts-api-rsystfip
+# express-ts-prisma-restapi-rsystfip
 
-This is an rest api for rsystfip project build with express + TS
+This is an restapi for rsystfip project in TypeScript powered by express and prisma ORM
