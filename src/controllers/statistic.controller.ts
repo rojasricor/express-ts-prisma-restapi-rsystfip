@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import * as Statistic from "../models/Statistic";
-import { statisticfilterSchema, statusSchema } from "../validation/joi";
+import { statisticfilterSchema, statusSchema } from "../validation/schemas";
 
 export async function getStatistics(
     req: Request,

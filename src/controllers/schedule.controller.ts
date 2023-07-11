@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import * as sgMail from "../helpers/sgMail";
+import * as sgMail from "../helpers/sg.helper";
 import { IScheduleData } from "../interfaces/IScheduleData";
 import * as Schedule from "../models/Schedule";
-import { cancellSchema, scheduleSchema } from "../validation/joi";
+import { cancellSchema, scheduleSchema } from "../validation/schemas";
 
 export async function getSchedule(
     req: Request,

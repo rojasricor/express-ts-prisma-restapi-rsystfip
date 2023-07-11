@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { ICancelledSchedule } from "interfaces/ICancelledSchedule";
-import { cancellationSchema } from "../validation/joi";
+import { cancellationSchema } from "../validation/schemas";
 import * as Cancellation from "../models/Cancellation";
 
 export async function createCancellation(

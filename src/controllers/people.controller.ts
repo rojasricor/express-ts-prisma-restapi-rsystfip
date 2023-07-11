@@ -1,7 +1,11 @@
 import { Request, Response } from "express";
 import { IPeople } from "../interfaces/IPeople";
 import * as People from "../models/People";
-import { idSchema, peopleEditSchema, schedulerSchema } from "../validation/joi";
+import {
+    idSchema,
+    peopleEditSchema,
+    schedulerSchema,
+} from "../validation/schemas";
 
 export async function createPerson(
     req: Request,

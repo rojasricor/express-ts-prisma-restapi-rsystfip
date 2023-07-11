@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import * as Report from "../models/Report";
-import { filterSchema } from "../validation/joi";
+import { filterSchema } from "../validation/schemas";
 
 export async function getReports(
     req: Request,

@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import Jwt from "jsonwebtoken";
 import { SECRET_KEY } from "../config";
-import * as Security from "../helpers/bcrypt";
-import * as sgMail from "../helpers/sgMail";
+import * as Security from "../helpers/bcrypt.helper";
+import * as sgMail from "../helpers/sg.helper";
 import { IPayload } from "../interfaces/IPayload";
 import { IUser } from "../interfaces/IUser";
 import * as User from "../models/User";
@@ -10,7 +10,7 @@ import {
     changePswSchema,
     forgetPswSchema,
     recoverPswSchema,
-} from "../validation/joi";
+} from "../validation/schemas";
 
 export async function verifyJwtForRecoverPassword(
     req: Request,

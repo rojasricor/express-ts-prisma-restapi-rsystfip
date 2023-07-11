@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import * as Security from "../helpers/bcrypt";
+import * as Security from "../helpers/bcrypt.helper";
 import { IUser } from "../interfaces/IUser";
 import * as User from "../models/User";
-import { idSchema, userSchema } from "../validation/joi";
+import { idSchema, userSchema } from "../validation/schemas";
 
 export async function getUser(req: Request, res: Response): Promise<Response> {
     const { error, value } = idSchema.validate(req.params);
