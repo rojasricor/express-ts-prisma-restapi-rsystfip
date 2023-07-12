@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
-import { IPeople } from "../interfaces/IPeople";
-import * as People from "../models/People";
+import * as PeopleService from "../services/People.service";
 import {
     idSchema,
     peopleEditSchema,
@@ -14,7 +13,7 @@ export async function createPerson(
     const { error, value } = schedulerSchema.validate(req.body);
     if (error) return res.status(400).json({ error: error.message });
 
-    const newPerson: IPeople = {
+    const personCreated = await PeopleService.createPerson({
         name: value.name,
         document_id: value.doctype,
         document_number: value.doc,
@@ -23,8 +22,7 @@ export async function createPerson(
         email: value.emailContact,
         facultie_id: value.facultie,
         come_asunt: value.asunt,
-    };
-    const personCreated = await People.createPerson(newPerson);
+    });
     if (!personCreated)
         return res.status(500).json({ error: "Error creating person" });
 
@@ -41,7 +39,7 @@ export async function getPerson(
     const { error, value } = idSchema.validate(req.params);
     if (error) return res.status(400).json({ error: error.message });
 
-    const personFound = await People.getPerson(value.id);
+    const personFound = await PeopleService.getPerson(value.id);
     if (!personFound)
         return res.status(404).json({ error: "Person not found" });
 
@@ -58,19 +56,18 @@ export async function updatePerson(
     });
     if (error) return res.status(400).json({ error: error.message });
 
-    const personFound = await People.getPerson(value.id);
+    const personFound = await PeopleService.getPerson(value.id);
     if (!personFound)
         return res.status(404).json({ error: "Person not found" });
 
-    const dataPerson: IPeople = {
+    const peopleEdited = await PeopleService.updatePerson(value.id, {
         name: value.name,
         document_id: value.doctype,
         document_number: value.doc,
         category_id: value.person,
         facultie_id: value.facultie,
         come_asunt: value.asunt,
-    };
-    const peopleEdited = await People.updatePerson(value.id, dataPerson);
+    });
     if (!peopleEdited)
         return res.status(500).json({ error: "None person updated" });
 
@@ -83,7 +80,7 @@ export async function getPeople(
     req: Request,
     res: Response
 ): Promise<Response> {
-    const people = await People.getPeople();
+    const people = await PeopleService.getPeople();
     if (!people) return res.status(500).json({ error: "Error getting people" });
 
     return res.status(200).json(people);
@@ -93,7 +90,7 @@ export async function getCancelledPeople(
     req: Request,
     res: Response
 ): Promise<Response> {
-    const peopleCancelled = await People.getCancelledPeople();
+    const peopleCancelled = await PeopleService.getCancelledPeople();
     if (!peopleCancelled)
         return res
             .status(500)

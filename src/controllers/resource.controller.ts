@@ -1,11 +1,13 @@
 import { Request, Response } from "express";
-import * as Resource from "../models/Resource";
+import * as FacultyService from "../services/Faculty.service";
+import * as DocumentService from "../services/Document.service";
+import * as CategoryService from "../services/Category.service";
 
 export async function getCategories(
     req: Request,
     res: Response
 ): Promise<Response> {
-    const categories = await Resource.getCategories();
+    const categories = await CategoryService.getCategories();
     if (!categories)
         return res.status(500).json({ error: "Error getting categories" });
 
@@ -16,7 +18,7 @@ export async function getDocuments(
     req: Request,
     res: Response
 ): Promise<Response> {
-    const documents = await Resource.getDocuments();
+    const documents = await DocumentService.getDocuments();
     if (!documents)
         return res.status(500).json({ error: "Error getting documents" });
 
@@ -27,7 +29,7 @@ export async function getFaculties(
     req: Request,
     res: Response
 ): Promise<Response> {
-    const faculties = await Resource.getFaculties();
+    const faculties = await FacultyService.getFaculties();
     if (!faculties)
         return res.status(500).json({ error: "Error getting faculties" });
 

@@ -1,0 +1,107 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// Model definitions
+
+model Category {
+  id       Int      @id @default(autoincrement())
+  category String   @unique
+  People   People[]
+}
+
+model Document {
+  id          Int      @id @default(autoincrement())
+  document    String   @unique
+  description String   @unique
+  People      People[]
+  User        User[]
+}
+
+model Faculty {
+  id       Int      @id @default(autoincrement())
+  facultie String   @unique
+  Dean     Dean[]
+  People   People[]
+}
+
+model Role {
+  id          Int    @id @default(autoincrement())
+  name        String @unique
+  permissions String @default("[]")
+  User        User[]
+}
+
+model Dean {
+  id         Int     @id @default(autoincrement())
+  dean       String
+  faculty    Faculty @relation(fields: [faculty_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  faculty_id Int
+}
+
+model CancelledAppointments {
+  id              Int      @id @default(autoincrement())
+  person          People   @relation(fields: [person_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  person_id       Int
+  date            DateTime @default(now())
+  cancelled_asunt String
+}
+
+model People {
+  id                    Int                     @id @default(autoincrement())
+  name                  String
+  document              Document                @relation(fields: [document_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  document_id           Int
+  document_number       String                  @unique
+  telephone             String?                 @unique
+  email                 String?                 @unique
+  category              Category                @relation(fields: [category_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  category_id           Int
+  faculty               Faculty                 @relation(fields: [facultie_id], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  facultie_id           Int
+  come_asunt            String
+  CancelledAppointments CancelledAppointments[]
+  Schedule              Schedule[]
+}
+
+model User {
+  id              Int      @id @default(autoincrement())
+  name            String
+  lastname        String
+  document        Document @relation(fields: [document_id], references: [id])
+  document_id     Int
+  document_number String   @unique
+  tel             String   @unique
+  email           String   @unique
+  password        String
+  role            Role     @relation(fields: [role_id], references: [id])
+  role_id         Int // Changed from role
+}
+
+model Schedule {
+  id               Int           @id @default(autoincrement())
+  person           People        @relation(fields: [person_id], references: [id])
+  person_id        Int
+  date_filter      DateTime      @default(now())
+  start_date       DateTime
+  end_date         DateTime
+  modification     DateTime      @default(now()) @updatedAt()
+  stateSchedule    StateSchedule @relation(fields: [stateSchedule_id], references: [id])
+  stateSchedule_id Int // Changed from status
+  color            String        @default("#388cdc")
+}
+
+// New model added to states from schedule model
+model StateSchedule {
+  id       Int        @id @default(autoincrement())
+  state    String     @unique
+  Schedule Schedule[]
+}

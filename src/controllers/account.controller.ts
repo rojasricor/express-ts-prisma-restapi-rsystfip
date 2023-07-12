@@ -1,11 +1,10 @@
 import { Request, Response } from "express";
 import Jwt from "jsonwebtoken";
 import { SECRET_KEY } from "../config";
-import * as Security from "../helpers/bcrypt.helper";
-import * as sgMail from "../helpers/sg.helper";
+import * as bcryptHelper from "../helpers/bcrypt.helper";
+import * as sgHelper from "../helpers/sg.helper";
 import { IPayload } from "../interfaces/IPayload";
-import { IUser } from "../interfaces/IUser";
-import * as User from "../models/User";
+import * as UserService from "../services/User.service";
 import {
     changePswSchema,
     forgetPswSchema,
@@ -20,7 +19,7 @@ export async function verifyJwtForRecoverPassword(
     if (!jwt) return res.status(401).json("Unauthorized");
 
     try {
-        Jwt.verify(jwt, SECRET_KEY || "secretkey") as IPayload;
+        Jwt.verify(jwt, SECRET_KEY || "secretkey");
         return res.status(200).json({ tokenIsValid: true });
     } catch (error: any) {
         return res.status(401).json({ error: error.message });
@@ -34,7 +33,7 @@ export async function sendJwtForRecoverPassword(
     const { error, value } = recoverPswSchema.validate(req.body);
     if (error) return res.status(400).json({ error: error.message });
 
-    const userFound = await User.getUser(undefined, value.email);
+    const userFound = await UserService.getUser(undefined, value.email);
     if (!userFound)
         return res.status(404).json({ error: "Email isn't registered" });
 
@@ -46,7 +45,7 @@ export async function sendJwtForRecoverPassword(
     const resetPasswordLink = `${value.APP_ROUTE}/${token}`;
     const msg = `Estimado usuario, hemos recibido una solicitud de cambio de contraseña para su cuenta. Si no ha sido usted, por favor ignore este correo electrónico.<br>Si es así, por favor ingrese al siguiente link para restablecer su contraseña:<br>${resetPasswordLink}<br><strong>Este link expirará en 10 minutos.</strong><br><br>Saludos, <br>Equipo ITFIP - RSystfip`;
 
-    const linkSended = await sgMail.sendEmail(
+    const linkSended = await sgHelper.sendEmail(
         value.email,
         "Solicitud de cambio de contraseña",
         msg
@@ -69,19 +68,19 @@ export async function updatePassword(
     });
     if (error) return res.status(400).json({ error: error.message });
 
-    const userFound = await User.getUser(value.id);
+    const userFound = await UserService.getUser(value.id);
     if (!userFound) return res.status(404).json({ error: "User not found" });
 
-    const auth = await Security.verifyPassword(
+    const auth = await bcryptHelper.verifyPassword(
         value.current_password,
         userFound.password
     );
     if (!auth)
         return res.status(401).json({ error: "Current password incorrect" });
 
-    const passwordChanged = await User.updateUser(userFound.id, {
-        password: await Security.encryptPassword(value.new_password),
-    } as IUser);
+    const passwordChanged = await UserService.updateUser(userFound.id, {
+        password: await bcryptHelper.encryptPassword(value.new_password),
+    });
     if (!passwordChanged)
         return res.status(500).json({ error: "Error updating password" });
 
@@ -101,20 +100,20 @@ export async function updatePasswordWithJwt(
             SECRET_KEY || "secretkey"
         ) as IPayload;
 
-        const userFound = await User.getUser(payload._id, payload.email);
+        const userFound = await UserService.getUser(payload._id, payload.email);
         if (!userFound)
             return res.status(404).json({ error: "User not found" });
 
-        const auth = await Security.verifyPassword(
+        const auth = await bcryptHelper.verifyPassword(
             value.password,
             userFound.password
         );
         if (auth)
             return res.status(400).json({ error: "None password updated" });
 
-        const passwordChanged = await User.updateUser(userFound.id, {
-            password: await Security.encryptPassword(value.password),
-        } as IUser);
+        const passwordChanged = await UserService.updateUser(userFound.id, {
+            password: await bcryptHelper.encryptPassword(value.password),
+        });
         if (!passwordChanged)
             return res.status(500).json({ error: "Error updating password" });
 

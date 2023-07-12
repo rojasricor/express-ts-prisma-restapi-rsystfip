@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
-import { ICancelledSchedule } from "interfaces/ICancelledSchedule";
 import { cancellationSchema } from "../validation/schemas";
-import * as Cancellation from "../models/Cancellation";
+import * as CancelledAppointmentService from "../services/CancelledAppointments.service";
 
 export async function createCancellation(
     req: Request,
@@ -10,9 +9,8 @@ export async function createCancellation(
     const { error, value } = cancellationSchema.validate(req.body);
     if (error) return res.status(400).json({ error: error.message });
 
-    const cancellationCreated = await Cancellation.createCancellation(
-        value as ICancelledSchedule
-    );
+    const cancellationCreated =
+        await CancelledAppointmentService.createCancelledAppointment(value);
     if (!cancellationCreated)
         return res.status(500).json({ error: "Error creating cancellation" });
 

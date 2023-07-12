@@ -2,15 +2,6 @@ import { OkPacket, RowDataPacket } from "mysql2";
 import { connect } from "../db";
 import { IPeople } from "../interfaces/IPeople";
 
-export async function getLastPerson(): Promise<IPeople | null> {
-    const conn = connect();
-    if (!conn) return null;
-    const [rows] = await conn.query<RowDataPacket[]>(
-        "SELECT id FROM people ORDER BY id DESC LIMIT 1"
-    );
-    return rows[0] as IPeople;
-}
-
 export async function createPerson(person: IPeople): Promise<IPeople | null> {
     const conn = connect();
     if (!conn) return null;
